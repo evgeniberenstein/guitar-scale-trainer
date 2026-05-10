@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guitar Scale Trainer — 25 Week Program</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+html{font-size:16px;}
+:root {
+  --paper:#1a1008; --paper-mid:#221508; --paper-light:#2e1e0f; --paper-card:#2a1a0c;
+  --ink:#f0e6cc; --ink-dim:#b09060; --ink-faint:#6a4e2a;
+  --accent:#c87941; --accent-bright:#e8983a; --accent-dark:#8b5a2a;
+  --green:#6aaa6a; --green-dim:#3a6a3a; --red:#c05040; --red-dim:#7a3028;
+  --blue:#5588cc; --blue-dim:#2a4a7a; --gold:#d4a840; --gold-dim:#7a5a10;
+  --border:#4a2e10; --border-bright:#6a4020;
+  --fh:'IM Fell English SC',serif; --fb:'IM Fell English',serif; --fm:'Courier Prime',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:var(--fb);min-height:100vh;
+  background-image:radial-gradient(ellipse at 20% 10%,#3a1e0840 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 90%,#2a1200 0%,transparent 50%),
+    repeating-linear-gradient(0deg,transparent,transparent 23px,#ffffff04 24px);
+  background-attachment:fixed;}
+
+/* TOPBAR */
+#topbar{position:sticky;top:0;z-index:100;background:#140c04ee;backdrop-filter:blur(8px);
+  border-bottom:2px solid var(--border-bright);padding:10px 20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+#topbar h1{font-family:var(--fh);font-size:1.15rem;color:var(--accent);letter-spacing:.04em;flex:1;}
+.nav-btn{background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1rem;padding:5px 12px;cursor:pointer;
+  border-radius:2px;letter-spacing:.05em;transition:all .2s;}
+.nav-btn:hover,.nav-btn.active{background:var(--accent-dark);color:var(--ink);border-color:var(--accent);}
+#week-badge{font-family:var(--fm);font-size:1rem;color:var(--gold);
+  border:1px solid var(--gold-dim);padding:4px 10px;border-radius:2px;white-space:nowrap;}
+
+/* LAYOUT */
+#main{max-width:960px;margin:0 auto;padding:24px 16px 80px;}
+.page{display:none;} .page.active{display:block;}
+
+/* CARDS */
+.card{background:var(--paper-card);border:1px solid var(--border);border-radius:3px;padding:20px 24px;margin-bottom:16px;}
+.card-title{font-family:var(--fh);font-size:1.15rem;color:var(--accent);letter-spacing:.06em;
+  margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px;text-transform:uppercase;}
+.card-subtitle{font-family:var(--fh);font-size:1.05rem;color:var(--ink-dim);letter-spacing:.05em;margin-bottom:10px;}
+
+/* HERO */
+.scale-hero{background:linear-gradient(135deg,#2e1a08,#1a0e04);border:2px solid var(--accent-dark);
+  border-radius:4px;padding:28px 28px 22px;margin-bottom:20px;position:relative;overflow:hidden;}
+.scale-hero::before{content:'♩';position:absolute;right:20px;top:10px;font-size:80px;
+  color:var(--accent-dark);opacity:.25;pointer-events:none;}
+.scale-hero .week-label{font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.scale-hero .scale-name{font-family:var(--fh);font-size:2.2rem;color:var(--accent-bright);
+  letter-spacing:.04em;line-height:1.1;}
+.scale-hero .scale-type{font-family:var(--fb);font-size:1rem;color:var(--ink-dim);margin-top:4px;font-style:italic;}
+.scale-hero .relative-badge{display:inline-block;margin-top:10px;background:var(--paper-light);
+  border:1px solid var(--border-bright);padding:4px 12px;border-radius:2px;
+  font-family:var(--fh);font-size:1rem;color:var(--ink-dim);letter-spacing:.04em;}
+.scale-hero .relative-badge span{color:var(--gold);}
+
+/* NOTES */
+.notes-row{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0;}
+.note-pill{background:var(--paper-light);border:1px solid var(--border-bright);padding:4px 10px;
+  border-radius:2px;font-family:var(--fm);font-size:1rem;color:var(--ink);}
+.note-pill.root{background:var(--accent-dark);border-color:var(--accent);}
+.note-pill.ct{border-color:var(--gold-dim);color:var(--gold);}
+
+/* FORMULA ROW */
+.formula-row{display:flex;align-items:center;gap:0;margin:10px 0 4px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.formula-row::-webkit-scrollbar{display:none;}
+.formula-step{display:flex;align-items:center;flex-shrink:0;}
+.fstep-note{font-family:var(--fm);font-size:.9rem;color:var(--ink);
+  background:var(--paper-light);border:1px solid var(--border-bright);
+  padding:3px 7px;border-radius:2px;white-space:nowrap;}
+.fstep-note.root-f{background:var(--accent-dark);border-color:var(--accent);color:var(--ink);}
+.fstep-interval{font-family:var(--fm);font-size:.9rem;color:var(--ink-faint);
+  padding:0 3px;letter-spacing:.02em;white-space:nowrap;}
+.fstep-interval.W{color:var(--gold);}
+.fstep-interval.H{color:var(--red);}
+.fstep-interval.WH{color:var(--blue);}
+.fstep-interval.HW{color:#9966cc;}
+.fstep-interval.W2{color:#44aaaa;}
+.formula-legend{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.fl-item{font-family:var(--fm);font-size:1rem;letter-spacing:.04em;}
+
+/* INFO BUTTON */
+.info-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:transparent;border:1px solid var(--border-bright);
+  color:var(--ink-faint);font-family:var(--fm);font-size:.8rem;
+  cursor:pointer;margin-left:6px;flex-shrink:0;vertical-align:middle;
+  transition:all .2s;
+}
+.info-btn:hover{border-color:var(--accent);color:var(--accent);}
+.info-popup{
+  display:none;position:absolute;z-index:50;
+  background:var(--paper-card);border:1px solid var(--accent);border-radius:3px;
+  padding:10px 14px;font-family:var(--fb);font-size:.9rem;color:var(--ink-dim);
+  max-width:260px;line-height:1.5;box-shadow:0 4px 20px #00000060;
+  left:0;top:calc(100% + 6px);
+}
+.info-popup.visible{display:block;}
+
+/* POSITIONS GRID */
+.positions-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0;}
+.pos-card{background:var(--paper-light);border:1px solid var(--border);border-radius:3px;
+  padding:10px 4px;text-align:center;cursor:pointer;transition:all .2s;position:relative;min-height:44px;}
+.pos-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+.pos-card.done{border-color:var(--green-dim);background:#1a2e1a;}
+.pos-card.done::after{content:'✓';position:absolute;top:3px;right:5px;font-size:1rem;color:var(--green);}
+.pos-card .pos-num{font-family:var(--fh);font-size:1.1rem;color:var(--accent);margin-bottom:2px;}
+.pos-card .pos-label{font-family:var(--fm);font-size:.78rem;color:var(--ink-faint);letter-spacing:.02em;}
+.pos-card .pos-fret{font-family:var(--fm);font-size:.82rem;color:var(--ink-dim);margin-top:2px;}
+.pos-card .pos-tab-hint{font-family:var(--fm);font-size:.75rem;color:var(--blue);margin-top:3px;opacity:.7;}
+
+/* TIMER */
+.timer-block{display:flex;align-items:center;gap:16px;background:var(--paper-light);
+  border:1px solid var(--border-bright);border-radius:3px;padding:14px 18px;margin:12px 0;}
+#timer-display{font-family:var(--fm);font-size:2.4rem;color:var(--gold);letter-spacing:.1em;flex:1;}
+.timer-btn{background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1rem;padding:7px 14px;cursor:pointer;
+  border-radius:2px;letter-spacing:.04em;transition:all .2s;}
+.timer-btn:hover{background:var(--accent-dark);color:var(--ink);border-color:var(--accent);}
+.timer-btn.primary{background:var(--accent-dark);color:var(--ink);border-color:var(--accent);}
+.timer-btn.primary:hover{background:var(--accent);}
+.timer-btn.danger{border-color:var(--red-dim);color:var(--red);}
+.timer-btn.danger:hover{background:var(--red-dim);color:var(--ink);border-color:var(--red);}
+
+/* PROGRESS */
+.prog-bar-wrap{background:var(--paper-light);border:1px solid var(--border);
+  border-radius:2px;height:8px;overflow:hidden;margin:8px 0;}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent-dark),var(--accent));
+  border-radius:2px;transition:width .4s ease;}
+.prog-bar-fill.green{background:linear-gradient(90deg,var(--green-dim),var(--green));}
+.prog-label{font-family:var(--fm);font-size:1.05rem;color:var(--ink-faint);
+  display:flex;justify-content:space-between;}
+
+/* REVIEW */
+.review-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.review-card{background:var(--paper-light);border:1px solid var(--blue-dim);
+  border-radius:3px;padding:14px 16px;cursor:pointer;transition:all .2s;position:relative;}
+.review-card:hover{border-color:var(--blue);}
+.review-card .rc-name{font-family:var(--fh);font-size:1rem;color:var(--blue);letter-spacing:.04em;}
+.review-card .rc-type{font-family:var(--fb);font-size:1rem;color:var(--ink-faint);font-style:italic;margin-top:2px;}
+.review-card .rc-done{position:absolute;top:8px;right:10px;font-family:var(--fm);font-size:1.05rem;color:var(--green);display:none;}
+.review-card.done{border-color:var(--green-dim);}
+.review-card.done .rc-done{display:block;}
+
+/* TEST */
+.test-card{background:linear-gradient(135deg,#1a0a0a,#0e0808);border:2px solid var(--red-dim);
+  border-radius:4px;padding:24px;text-align:center;}
+.test-card h2{font-family:var(--fh);font-size:1.5rem;color:var(--red);letter-spacing:.06em;margin-bottom:8px;}
+.test-question{font-family:var(--fh);font-size:1.1rem;color:var(--ink);margin:20px 0 12px;}
+.test-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+.test-opt{background:var(--paper-light);border:1px solid var(--border-bright);
+  color:var(--ink);font-family:var(--fh);font-size:1rem;
+  padding:12px 10px;cursor:pointer;border-radius:3px;letter-spacing:.03em;transition:all .2s;}
+.test-opt:hover{background:var(--accent-dark);border-color:var(--accent);}
+.test-opt.correct{background:#1a3a1a!important;border-color:var(--green)!important;color:var(--green)!important;}
+.test-opt.wrong{background:#3a1010!important;border-color:var(--red)!important;color:var(--red)!important;}
+.test-score{font-family:var(--fh);font-size:1rem;color:var(--gold);margin:10px 0;}
+.test-progress{font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);letter-spacing:.05em;margin-bottom:16px;}
+
+/* SCHEDULE */
+.sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;}
+.sched-item{background:var(--paper-card);border:1px solid var(--border);border-radius:3px;
+  padding:10px 12px;cursor:pointer;transition:all .2s;}
+.sched-item:hover{border-color:var(--accent);}
+.sched-item.current{border-color:var(--accent);background:#2e1a08;}
+.sched-item.completed{border-color:var(--green-dim);}
+.sched-item.test-week{border-color:var(--red-dim);}
+.sched-item .sw-num{font-family:var(--fm);font-size:1.05rem;color:var(--ink-faint);letter-spacing:.08em;}
+.sched-item .sw-name{font-family:var(--fh);font-size:1.05rem;color:var(--ink);margin-top:3px;letter-spacing:.02em;}
+.sched-item.test-week .sw-name{color:var(--red);}
+.sched-item.current .sw-name{color:var(--accent-bright);}
+.sched-item.completed .sw-name{color:var(--green);}
+.sched-item .sw-type{font-family:var(--fb);font-size:1.1rem;color:var(--ink-faint);font-style:italic;margin-top:2px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.stat-box{background:var(--paper-card);border:1px solid var(--border);border-radius:3px;padding:16px;text-align:center;}
+.stat-num{font-family:var(--fh);font-size:2rem;color:var(--accent-bright);line-height:1;}
+.stat-lbl{font-family:var(--fm);font-size:1.05rem;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;margin-top:6px;}
+.heatmap{display:grid;grid-template-columns:repeat(25,1fr);gap:3px;margin:10px 0;}
+.hm-cell{aspect-ratio:1;border-radius:1px;background:var(--paper-light);border:1px solid var(--border);cursor:pointer;transition:all .15s;position:relative;}
+.hm-cell.done{background:var(--accent-dark);border-color:var(--accent);}
+.hm-cell.test{background:var(--red-dim);border-color:var(--red);}
+.hm-cell.current{background:var(--gold-dim);border-color:var(--gold);}
+.hm-cell:hover::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);
+  background:#000a;color:var(--ink);font-family:var(--fm);font-size:1rem;padding:2px 6px;
+  border-radius:2px;white-space:nowrap;pointer-events:none;z-index:10;}
+
+/* CHORDS */
+.chords-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;}
+.chord-pill{background:var(--paper-light);border:1px solid var(--gold-dim);
+  padding:4px 10px;border-radius:2px;font-family:var(--fm);font-size:1rem;color:var(--gold);}
+.chord-pill.i{border-color:var(--accent);color:var(--accent);}
+
+/* MISC */
+.info-text{font-family:var(--fb);font-size:1rem;color:var(--ink-dim);line-height:1.6;}
+.info-text em{color:var(--accent);font-style:normal;}
+.badge{display:inline-block;font-family:var(--fm);font-size:1.05rem;padding:2px 8px;border-radius:2px;letter-spacing:.06em;}
+.badge-test{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+.badge-review{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue);}
+.badge-new{background:var(--accent-dark);color:var(--accent);border:1px solid var(--accent);}
+.btn{background:var(--accent-dark);color:var(--ink);border:1px solid var(--accent);font-family:var(--fh);
+  font-size:1rem;padding:9px 20px;cursor:pointer;border-radius:2px;letter-spacing:.05em;transition:all .2s;}
+.btn:hover{background:var(--accent);}
+.btn.ghost{background:transparent;color:var(--ink-dim);border-color:var(--border-bright);}
+.btn.ghost:hover{background:var(--paper-light);color:var(--ink);}
+.flex-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.spacer{flex:1;}
+
+/* DAILY LOG */
+.day-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.day-row:last-child{border-bottom:none;}
+.day-name{font-family:var(--fh);font-size:1rem;color:var(--ink-dim);width:80px;flex-shrink:0;}
+.day-mins{font-family:var(--fm);font-size:1rem;color:var(--gold);width:50px;}
+.mini-prog{flex:1;background:var(--paper-light);border:1px solid var(--border);border-radius:2px;height:6px;overflow:hidden;}
+.mini-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent-dark),var(--accent));border-radius:2px;transition:width .4s;}
+.mini-prog-fill.met{background:linear-gradient(90deg,var(--green-dim),var(--green));}
+.day-check{font-size:1rem;width:20px;text-align:center;}
+.input-min{background:var(--paper-light);border:1px solid var(--border-bright);color:var(--ink);
+  font-family:var(--fm);font-size:1rem;padding:6px 8px;width:70px;border-radius:2px;text-align:center;}
+.input-min:focus{outline:none;border-color:var(--accent);}
+
+/* ═══════════════════════════════════════
+   TAB MODAL
+   ═══════════════════════════════════════ */
+#tab-modal{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:#000000cc;backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;padding:16px;
+}
+#tab-modal.open{display:flex;}
+#tab-modal-inner{
+  background:var(--paper-card);border:2px solid var(--accent);
+  border-radius:4px;width:100%;max-width:780px;max-height:90vh;
+  overflow-y:auto;position:relative;
+  box-shadow:0 0 60px #00000088;
+}
+#tab-modal-header{
+  background:linear-gradient(135deg,#2e1a08,#1a0e04);
+  border-bottom:1px solid var(--border-bright);
+  padding:16px 20px 14px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  position:sticky;top:0;z-index:10;
+}
+#tab-modal-title{font-family:var(--fh);font-size:1.2rem;color:var(--accent-bright);letter-spacing:.04em;}
+#tab-modal-sub{font-family:var(--fb);font-size:1rem;color:var(--ink-dim);margin-top:3px;font-style:italic;}
+#tab-modal-close{
+  background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1rem;padding:5px 12px;cursor:pointer;
+  border-radius:2px;white-space:nowrap;transition:all .2s;flex-shrink:0;
+}
+#tab-modal-close:hover{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+#tab-modal-body{padding:20px;}
+
+/* TAB NAVIGATION inside modal */
+.tab-pos-nav{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.tab-pos-btn{
+  background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1rem;padding:5px 14px;cursor:pointer;
+  border-radius:2px;letter-spacing:.04em;transition:all .2s;
+}
+.tab-pos-btn:hover{border-color:var(--accent);color:var(--ink);}
+.tab-pos-btn.active{background:var(--accent-dark);border-color:var(--accent);color:var(--ink);}
+.tab-pos-btn.done-pos{border-color:var(--green-dim);color:var(--green);}
+.tab-pos-btn.done-pos.active{background:#1a3a1a;}
+
+/* TAB STAFF SVG wrapper */
+.tab-staff-wrap{
+  background:#fdf6e3;border:1px solid #8b6a2a;border-radius:3px;
+  padding:18px 16px 14px;margin:14px 0;overflow:hidden;
+}
+.tab-staff-wrap svg{display:block;width:100%;}
+
+/* Legend below tab */
+.tab-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
+.tl-item{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:1.1rem;color:var(--ink-dim);}
+.tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+
+/* Position info strip */
+.pos-info-strip{
+  display:flex;gap:16px;flex-wrap:wrap;
+  background:var(--paper-light);border:1px solid var(--border);
+  border-radius:3px;padding:12px 16px;margin-bottom:14px;
+}
+.pis-item{font-family:var(--fm);font-size:1rem;}
+.pis-label{color:var(--ink-faint);letter-spacing:.06em;font-size:1.05rem;text-transform:uppercase;margin-bottom:2px;}
+.pis-val{color:var(--ink);}
+
+/* Finger guide */
+.finger-guide{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.fg-item{
+  background:var(--paper-light);border:1px solid var(--border);
+  border-radius:3px;padding:6px 10px;
+  font-family:var(--fm);font-size:1.1rem;color:var(--ink-dim);text-align:center;
+}
+.fg-fnum{font-family:var(--fh);font-size:1rem;color:var(--accent);display:block;}
+
+/* Mark done button in modal */
+.modal-done-btn{
+  margin-top:14px;width:100%;padding:11px;
+  background:var(--green-dim);border:1px solid var(--green);color:var(--ink);
+  font-family:var(--fh);font-size:1.05rem;letter-spacing:.05em;
+  cursor:pointer;border-radius:2px;transition:all .2s;
+}
+.modal-done-btn:hover{background:var(--green);}
+.modal-done-btn.already{background:var(--paper-light);border-color:var(--border);color:var(--ink-faint);}
+
+/* CHORD DIAGRAMS */
+.chord-diagrams-wrap{
+  display:flex;gap:14px;flex-wrap:wrap;margin:14px 0;
+}
+.chord-diagram-cell{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  flex-shrink:0;
+}
+.chord-diagram-name{
+  font-family:var(--fh);font-size:1.5rem;color:var(--accent);
+  letter-spacing:.03em;text-align:center;
+}
+.chord-diagram-quality{
+  font-family:var(--fm);font-size:1rem;color:var(--ink-faint);
+  letter-spacing:.05em;text-align:center;margin-top:-2px;
+}
+
+/* LABEL MODE TOGGLE */
+.label-mode-row{display:flex;gap:6px;margin-bottom:12px;align-items:center;}
+.lm-btn{background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1rem;padding:5px 14px;cursor:pointer;
+  border-radius:2px;letter-spacing:.04em;transition:all .2s;}
+.lm-btn:hover{border-color:var(--accent);color:var(--ink);}
+.lm-btn.active{background:var(--accent-dark);border-color:var(--accent);color:var(--ink);}
+.lm-label{font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);margin-right:4px;}
+
+/* REP COUNTER */
+.rep-counter{display:flex;flex-direction:column;gap:3px;margin-top:8px;}
+.rep-row{display:flex;align-items:center;gap:4px;justify-content:center;}
+.rep-label{font-family:var(--fm);font-size:1rem;color:var(--ink-faint);letter-spacing:.05em;text-align:center;margin-bottom:1px;}
+.rep-btn{background:var(--paper-mid);border:1px solid var(--border);color:var(--ink-dim);
+  font-family:var(--fm);font-size:1rem;width:22px;height:22px;cursor:pointer;
+  border-radius:2px;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;padding:0;}
+.rep-btn:hover{background:var(--accent-dark);border-color:var(--accent);color:var(--ink);}
+.rep-count{font-family:var(--fm);font-size:1rem;color:var(--ink);min-width:28px;text-align:center;}
+.rep-count.done{color:var(--green);}
+.rep-bar{height:8px;border-radius:4px;background:var(--paper-light);border:1px solid var(--border);overflow:hidden;margin-top:2px;}
+.rep-bar-fill{height:100%;border-radius:4px;transition:width .3s;}
+
+/* MIC LISTENER */
+.mic-btn{
+  background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1.1rem;padding:5px 10px;cursor:pointer;
+  border-radius:2px;letter-spacing:.04em;transition:all .2s;white-space:nowrap;
+}
+.mic-btn:hover{border-color:var(--accent);color:var(--ink);}
+.mic-btn.armed{background:#3a1010;border-color:var(--red);color:var(--red);animation:pulse-mic 1s infinite;}
+.mic-btn.armed:hover{background:#5a1818;}
+@keyframes pulse-mic{0%,100%{opacity:1;}50%{opacity:.5;}}
+.mic-level{height:4px;border-radius:2px;background:var(--paper-light);
+  border:1px solid var(--border);overflow:hidden;margin-top:4px;transition:all .1s;}
+.mic-level-fill{height:100%;border-radius:2px;background:var(--green);transition:width .05s;}
+.mic-level-fill.loud{background:var(--accent);}
+.mic-level-fill.peak{background:var(--red);}
+
+/* METRONOME */
+.metro-btn{
+  background:transparent;border:1px solid var(--border-bright);color:var(--ink-dim);
+  font-family:var(--fh);font-size:1rem;padding:6px 14px;cursor:pointer;
+  border-radius:2px;letter-spacing:.04em;transition:all .2s;
+}
+.metro-btn:hover{border-color:var(--accent);color:var(--ink);}
+.metro-btn.running{background:#1a2a10;border-color:var(--green);color:var(--green);}
+.metro-bpm-btn{
+  background:var(--paper-mid);border:1px solid var(--border-bright);color:var(--ink);
+  font-family:var(--fm);font-size:1rem;width:34px;height:34px;cursor:pointer;
+  border-radius:2px;transition:all .15s;
+}
+.metro-bpm-btn:hover{background:var(--accent-dark);border-color:var(--accent);}
+.metro-beat{
+  display:inline-block;width:12px;height:12px;border-radius:50%;
+  background:var(--border);transition:background .05s;margin:0 3px;
+}
+.metro-beat.active{background:var(--accent-bright);}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:#1a0e04ee;border:1px solid var(--accent);color:var(--ink);
+  font-family:var(--fh);font-size:1rem;padding:10px 22px;border-radius:3px;
+  letter-spacing:.04em;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;}
+#toast.show{opacity:1;}
+
+@media(max-width:600px){
+  .positions-grid{grid-template-columns:1fr;gap:4px;}
+  .pos-card{padding:10px 12px;display:flex;align-items:center;gap:12px;text-align:left;}
+  .pos-card .pos-num{font-size:1.3rem;margin-bottom:0;min-width:28px;}
+  .pos-card .pos-label{display:block;font-size:.9rem;}
+  .pos-card .pos-fret{font-size:.85rem;margin-top:0;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .review-cards{grid-template-columns:1fr;}
+  .test-options{grid-template-columns:1fr;}
+  .scale-hero .scale-name{font-size:1.8rem;}
+  #timer-display{font-size:1.8rem;}
+  .tab-pos-nav{gap:4px;}
+  .tab-pos-btn{padding:8px 12px;font-size:1rem;min-height:44px;}
+  .nav-btn{padding:8px 10px;font-size:.9rem;min-height:44px;}
+  .btn{min-height:44px;font-size:1rem;}
+  .rep-btn{width:44px !important;height:44px !important;font-size:1.2rem !important;}
+  .metro-bpm-btn{width:44px;height:44px;}
+  .input-min{width:64px;font-size:1rem;}
+  .day-name{font-size:1rem;}
+  .card{padding:12px 12px;}
+}
+@media(min-width:768px){
+  /* iPad — slightly larger base */
+  body{font-size:17px;}
+  .card-title{font-size:1.25rem;}
+  .info-text{font-size:1.05rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>Guitar Scale Trainer</h1>
+  <div id="week-badge">Week 1 / 25</div>
+  <button class="nav-btn active" data-page="today">Today</button>
+  <button class="nav-btn" data-page="schedule">Schedule</button>
+  <button class="nav-btn" data-page="stats">Progress</button>
+  <button class="nav-btn" data-page="refs" style="color:var(--ink-faint);">Refs</button>
+  <button class="nav-btn" data-page="lesson" style="border-color:var(--gold-dim);color:var(--gold);">★ Lesson</button>
+</div>
+
+<div id="main">
+  <div class="page active" id="page-today"></div>
+  <div class="page" id="page-schedule">
+    <div class="card">
+      <div class="card-title">25-Week Learning Programme</div>
+      <p class="info-text" style="margin-bottom:14px;">
+        Click any week to jump to it.
+        <span class="badge badge-new">NEW</span> = new scale &nbsp;
+        <span class="badge badge-review">REV</span> = review &nbsp;
+        <span class="badge badge-test">TEST</span> = bi-weekly test
+      </p>
+      <div class="sched-grid" id="sched-grid"></div>
+    </div>
+  </div>
+  <div class="page" id="page-stats">
+    <div class="card">
+      <div class="card-title">Overall Progress</div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">25-Week Heatmap</div>
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Test Scores</div>
+      <div id="test-score-history"></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-refs">
+    <div class="card">
+      <div class="card-title">References &amp; Credits</div>
+      <p class="info-text" style="margin-bottom:18px;">
+        This app uses the following open-source resources and references.
+      </p>
+
+      <!-- CHORD DATABASE -->
+      <div style="border:1px solid var(--border);border-radius:3px;padding:16px 18px;margin-bottom:14px;">
+        <div style="font-family:var(--fh);font-size:1.1rem;color:var(--accent-bright);margin-bottom:6px;">Chord Voicing Database</div>
+        <div style="font-family:var(--fm);font-size:1rem;color:var(--ink-dim);margin-bottom:10px;">
+          Chord shapes based on the standard CAGED system — E-shape, A-shape, and D-shape
+          moveable barre chord voicings for all 12 keys. These are classical guitar pedagogy
+          shapes derived from the five open chord forms (C, A, G, E, D) moved up the neck.
+        </div>
+        <div style="font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+          Additional reference:
+          <a href="https://github.com/tombatossals/chords-db" target="_blank"
+             style="color:var(--blue);">github.com/tombatossals/chords-db</a>
+          by David Rubert (tombatossals)
+        </div>
+        <div style="margin-top:12px;background:var(--paper-mid);border:1px solid var(--border);
+             border-radius:2px;padding:12px 14px;font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+          <div style="color:var(--ink-dim);margin-bottom:6px;font-family:var(--fh);">MIT License</div>
+          Copyright (c) 2015 David Rubert (tombatossals)<br><br>
+          Permission is hereby granted, free of charge, to any person obtaining a copy of this
+          software and associated documentation files (the "Software"), to deal in the Software
+          without restriction, including without limitation the rights to use, copy, modify, merge,
+          publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+          to whom the Software is furnished to do so, subject to the following conditions:<br><br>
+          The above copyright notice and this permission notice shall be included in all copies or
+          substantial portions of the Software.<br><br>
+          THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+          INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+          PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+          FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+          OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+          DEALINGS IN THE SOFTWARE.
+        </div>
+      </div>
+
+      <!-- K. HICKS METHOD -->
+      <div style="border:1px solid var(--border);border-radius:3px;padding:16px 18px;margin-bottom:14px;">
+        <div style="font-family:var(--fh);font-size:1.1rem;color:var(--accent-bright);margin-bottom:6px;">Modal Scale Patterns (Weeks 26–32)</div>
+        <div style="font-family:var(--fm);font-size:1rem;color:var(--ink-dim);">
+          7 modal patterns for C Major Complete based on the K. Hicks method
+          (MUS1131 — Guitar Ia). Ionian through Locrian, played starting on the root (®),
+          ascending and descending, with eighths, triplets, and sixteenths.
+          12 keys × 7 patterns × 7 modes = 588 possibilities.
+        </div>
+        <div style="margin-top:8px;font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+          Proficiency check: Play ___ key, Pattern ___ &nbsp;·&nbsp; Play ___ mode from ___ scale degree.
+        </div>
+      </div>
+
+      <!-- APP INFO -->
+      <div style="border:1px solid var(--border);border-radius:3px;padding:16px 18px;">
+        <div style="font-family:var(--fh);font-size:1.1rem;color:var(--accent-bright);margin-bottom:6px;">Guitar Scale Trainer</div>
+        <div style="font-family:var(--fm);font-size:1rem;color:var(--ink-dim);margin-bottom:8px;">
+          A 25-week progressive scale learning programme with CAGED positions, diatonic chord voicings,
+          mic-based pitch detection and rep counting, daily practice log, and weekly test system.
+        </div>
+        <div style="font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+          Fonts: IM Fell English SC &amp; Courier Prime (Google Fonts, OFL) ·
+          Pitch detection: autocorrelation algorithm (public domain) ·
+          All music theory: standard Western music theory (public domain)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB MODAL -->
+<div id="tab-modal">
+  <div id="tab-modal-inner">
+    <div id="tab-modal-header">
+      <div>
+        <div id="tab-modal-title"></div>
+        <div id="tab-modal-sub"></div>
+      </div>
+      <button id="tab-modal-close" onclick="closeTabModal()">✕ Close</button>
+    </div>
+    <div id="tab-modal-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  MUSIC THEORY ENGINE
+// ═══════════════════════════════════════════════════════════════════
+
+// Chromatic notes (prefer sharps; enharmonic map for flats)
+const CHROMA = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLAT_MAP = {'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#','A#':'A#','D#':'D#','G#':'G#','C#':'C#','F#':'F#'};
+function noteIdx(n){ return CHROMA.indexOf(FLAT_MAP[n]||n); }
+function noteAt(root, semis){ return CHROMA[(noteIdx(root)+semis+1200)%12]; }
+
+// Scale formulas: semitone intervals from root
+const SCALE_FORMULAS = {
+  'Major':                [0,2,4,5,7,9,11],
+  'Natural Minor':        [0,2,3,5,7,8,10],
+  'Major Pentatonic':     [0,2,4,7,9],
+  'Minor Pentatonic':     [0,3,5,7,10],
+  'Blues':                [0,3,5,6,7,10],
+  'Dorian':               [0,2,3,5,7,9,10],
+  'Mixolydian':           [0,2,4,5,7,9,10],
+  'Phrygian':             [0,1,3,5,7,8,10],
+  'Lydian':               [0,2,4,6,7,9,11],
+  'Locrian':              [0,1,3,5,6,8,10],
+  'Harmonic Minor':       [0,2,3,5,7,8,11],
+  'Melodic Minor':        [0,2,3,5,7,9,11],
+  'Whole Tone':           [0,2,4,6,8,10],
+  'Diminished (H-W)':     [0,1,3,4,6,7,9,10],
+};
+
+// Step labels between consecutive intervals
+function stepsFromIntervals(intervals) {
+  const steps = [];
+  for (let i = 0; i < intervals.length - 1; i++) {
+    const diff = intervals[i+1] - intervals[i];
+    steps.push(diff === 1 ? 'H' : diff === 2 ? 'W' : diff === 3 ? 'WH' : diff === 4 ? 'W2' : '?');
+  }
+  // wrap from last note back to root (octave)
+  const last = 12 - intervals[intervals.length-1];
+  steps.push(last === 1 ? 'H' : last === 2 ? 'W' : last === 3 ? 'WH' : '?');
+  return steps;
+}
+
+// Scale degree labels
+const DEGREE_NAMES = ['1','2','b3','3','4','b5','5','b6','6','b7','7'];
+// map semitone offset → degree
+function semitoDegree(s) {
+  const map = {0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'b6',9:'6',10:'b7',11:'7'};
+  return map[s] || '?';
+}
+
+// Standard tuning: open string notes (low E → high e), string 0=low E
+const OPEN_STRINGS = ['E','A','D','G','B','E']; // index 0=low E, 5=high e
+
+// Get fret number for a note on a string (lowest fret in range)
+function fretForNote(stringOpenNote, targetNote, minFret, maxFret) {
+  const openIdx = noteIdx(stringOpenNote);
+  const targetIdx = noteIdx(targetNote);
+  let diff = (targetIdx - openIdx + 12) % 12;
+  // find lowest fret >= minFret
+  let fret = diff;
+  while (fret < minFret) fret += 12;
+  if (fret > maxFret) return null;
+  return fret;
+}
+
+// ── 5 neck zones spanning frets 0–15
+// Each zone has a fixed 3-fret anchor; notes are collected using a variable
+// window that expands naturally to include all scale tones on each string
+// that are "closest" to the anchor zone — i.e. the scale note whose fret
+// falls nearest the zone midpoint without crossing into the next zone's territory.
+//
+//   Zone  Anchor   Fret range shown
+//   1     0– 3     open – fret ~4
+//   2     3– 6     fret  3 – ~7
+//   3     6– 9     fret  6 – ~10
+//   4     9–12     fret  9 – ~13
+//   5    12–15     fret 12 – 15
+//
+// The algorithm:
+//   For each string, find every scale note in [zoneStart, zoneStart+2] inclusive.
+//   Then expand up to 2 extra frets above the zone to catch the natural
+//   "position shift" note that guitarists always include.
+//   A note on the exact boundary (e.g. fret 3) belongs to the LOWER zone (zone 1),
+//   so zone 2 starts its search from fret 4.
+
+const ZONE_STARTS = [0, 3, 6, 9, 12];   // fixed anchor frets
+const ZONE_NAMES  = ['Open–3','3–6','6–9','9–12','12–15'];
+
+// Returns the display window {lo, hi} for a zone (root-independent)
+function cagedWindows() {
+  return ZONE_STARTS.map((lo, i) => ({ lo, hi: ZONE_STARTS[i] + 3 }));
+}
+
+// Build fingering for one position.
+// Returns { fingering: [{string,fret,note,degree,finger}], lo, hi }
+function buildPositionFingering(rootName, scaleType, posIdx) {
+  const intervals  = SCALE_FORMULAS[scaleType] || SCALE_FORMULAS['Major'];
+  const scaleNotes = intervals.map(i => noteAt(rootName, i));
+  const ri         = noteIdx(rootName);
+
+  const zoneStart = ZONE_STARTS[posIdx];
+  // For boundary zones: zone 1 includes fret 0 (open); other zones start
+  // one fret ABOVE their anchor so boundary notes don't duplicate.
+  const searchLo  = posIdx === 0 ? 0 : zoneStart;
+  const searchHi  = zoneStart + 4;   // variable: up to 4 frets above anchor
+
+  const fingering = [];
+
+  for (let s = 0; s < 6; s++) {
+    const openIdx = noteIdx(OPEN_STRINGS[s]);
+
+    for (const note of scaleNotes) {
+      const noteI    = noteIdx(note);
+      const baseDiff = (noteI - openIdx + 12) % 12;
+
+      // Find the fret occurrence of this note that falls in [searchLo, searchHi]
+      let fret = baseDiff;
+      // Step up octaves until fret >= searchLo
+      while (fret < searchLo) fret += 12;
+      if (fret <= searchHi) {
+        const semiFromRoot = (noteI - ri + 12) % 12;
+        fingering.push({
+          fret, note,
+          degree: semitoDegree(semiFromRoot),
+          string: s,
+          finger: 0
+        });
+      }
+    }
+  }
+
+  // Remove duplicates (same string + fret)
+  const seen = new Set();
+  const unique = fingering.filter(n => {
+    const k = n.string + ':' + n.fret;
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+
+  // Finger numbers: 1 = lowest fret in this position, ascending
+  const frettedFrets = unique.filter(n => n.fret > 0).map(n => n.fret);
+  const posMinFret   = frettedFrets.length ? Math.min(...frettedFrets) : zoneStart;
+
+  for (const n of unique) {
+    n.finger = n.fret === 0 ? 0 : Math.min(4, n.fret - posMinFret + 1);
+  }
+
+  // Actual lo/hi for SVG rendering (what notes actually span)
+  const allFrets = unique.map(n => n.fret);
+  const actualLo = allFrets.length ? Math.min(...allFrets) : zoneStart;
+  const actualHi = allFrets.length ? Math.max(...allFrets) : zoneStart + 3;
+
+  return { fingering: unique, lo: actualLo, hi: actualHi, zoneStart };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RENDER FRETBOARD DIAGRAM SVG
+// ═══════════════════════════════════════════════════════════════════
+function renderTabSVG(rootName, scaleType, posIdx, labelMode, relRootName) {
+  labelMode   = labelMode   || 'notes';
+  relRootName = (relRootName && relRootName !== '—' && relRootName !== '') ? relRootName : null;
+  const { fingering, lo, hi, zoneStart } = buildPositionFingering(rootName, scaleType, posIdx);
+
+  const MARKER_FRETS = new Set([3,5,7,9,15,17,19,21]);
+  const DOUBLE_FRETS = new Set([12,24]);
+
+  const isOpen = zoneStart === 0;
+
+  // ── Layout strategy
+  // We show N fret slots. Each slot is between two fret bars.
+  // For open position: slots are 0(open), 1, 2, 3, 4
+  //   Slot 0 = open strings (left of nut). Nut bar separates it from slot 1.
+  //   Slots 1-4 = fretted notes.
+  // For other positions: slots are zoneStart, zoneStart+1, zoneStart+2, zoneStart+3, (zoneStart+4 if needed)
+  //   No open column. Leftmost bar is labelled with zoneStart-1 context bar.
+
+  // Define slots as array of fret numbers to display
+  // For open: [0, 1, 2, 3, 4]  (slot 0 = open)
+  // For others: [zoneStart, zoneStart+1, ..., fretEnd]
+  const slotMin  = isOpen ? 0 : zoneStart;
+  const slotMax  = isOpen ? Math.max(4, hi) : Math.max(hi, zoneStart + 3);
+  const slots    = [];
+  for (let f = slotMin; f <= slotMax; f++) slots.push(f);
+  const N = slots.length;
+
+  // Canvas
+  const W       = 580;
+  const STR_LBL = 44;   // left margin for string labels (E A D G B e)
+  const RIGHT   = 20;
+  const TOP     = 28;
+  const BOTTOM  = 44;   // legend
+  const EXTRA_B = 48;   // space between last string and fret numbers
+  const STR_GAP = 58;
+  const H       = TOP + 5 * STR_GAP + EXTRA_B + BOTTOM;
+  const boardW  = W - STR_LBL - RIGHT;
+  const SLOT_W  = boardW / N;   // width of each slot
+
+  const strY = s => TOP + (5 - s) * STR_GAP;
+
+  // Slot index for a given fret number
+  const slotOf = f => f - slotMin;
+
+  // x-centre of slot for fret f
+  const noteX = f => STR_LBL + (slotOf(f) + 0.5) * SLOT_W;
+
+  // x-position of the bar BETWEEN slot f and slot f+1
+  // (the nut for open position is between slot 0 and slot 1)
+  const barX = slotIdx => STR_LBL + slotIdx * SLOT_W;
+
+  const C = {
+    bg:        '#fdf6e3',
+    board:     '#e8d8a8',
+    openCol:   '#f4ecd0',
+    nut:       '#3a2a10',
+    fretLine:  '#b09050',
+    string:    '#9a8050',
+    marker:    '#d4b880',
+    markerRing:'#a08840',
+    dim:       '#8b6a2a',
+    root:      '#c87941',
+    rootRing:  '#7a4010',
+    relRoot:   '#3a8a8a',
+    relRing:   '#1a5a5a',
+    note:      '#f0e6cc',
+    noteRing:  '#8b6a2a',
+    text:      '#1a0e04',
+    degreeR:   '#c87941',
+    degreeRel: '#3a8a8a',
+    degree:    '#6a4e2a',
+  };
+
+  const relRootIdx = relRootName ? noteIdx(relRootName) : -1;
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 ${W} ${H}" style="display:block;">`;
+  svg += `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
+
+  const boardTop    = strY(5) - 8;
+  const boardBottom = strY(0) + 8;
+
+  // ── Board background: open column lighter, fretted board normal
+  if (isOpen) {
+    // Open column = slot 0
+    svg += `<rect x="${STR_LBL}" y="${boardTop}" width="${SLOT_W}" height="${boardBottom-boardTop}" fill="${C.openCol}" rx="0"/>`;
+    // Fretted area = slots 1..N-1
+    svg += `<rect x="${STR_LBL + SLOT_W}" y="${boardTop}" width="${boardW - SLOT_W}" height="${boardBottom-boardTop}" fill="${C.board}" rx="0"/>`;
+  } else {
+    svg += `<rect x="${STR_LBL}" y="${boardTop}" width="${boardW}" height="${boardBottom-boardTop}" fill="${C.board}" rx="0"/>`;
+  }
+
+  // ── Inlay marker dots (only in fretted slots, not open slot)
+  for (let si = (isOpen ? 1 : 0); si < N; si++) {
+    const f  = slots[si];
+    const mx = STR_LBL + (si + 0.5) * SLOT_W;
+    if (DOUBLE_FRETS.has(f)) {
+      svg += `<circle cx="${mx}" cy="${boardTop-8}" r="5" fill="${C.marker}" stroke="${C.markerRing}" stroke-width="1"/>`;
+      svg += `<circle cx="${mx}" cy="${boardBottom+8}" r="5" fill="${C.marker}" stroke="${C.markerRing}" stroke-width="1"/>`;
+    } else if (MARKER_FRETS.has(f)) {
+      svg += `<circle cx="${mx}" cy="${(boardTop+boardBottom)/2}" r="5" fill="${C.marker}" stroke="${C.markerRing}" stroke-width="1"/>`;
+    }
+  }
+
+  // ── Slot dividers (vertical bars)
+  // Draw N+1 bars: one before each slot and one after the last
+  for (let si = 0; si <= N; si++) {
+    const x = barX(si);
+    const isNut = isOpen && si === 1; // nut separates open column from fretted board
+    const isLeftEdge = si === 0;
+    const sw  = isNut ? 5 : 1.5;
+    const col = isNut ? C.nut : C.fretLine;
+    // Don't draw the leftmost and rightmost as full bars — just the inner dividers and nut
+    if (!isLeftEdge || isOpen) {
+      svg += `<line x1="${x}" y1="${boardTop}" x2="${x}" y2="${boardBottom}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    }
+  }
+  // Always draw leftmost edge
+  svg += `<line x1="${STR_LBL}" y1="${boardTop}" x2="${STR_LBL}" y2="${boardBottom}" stroke="${C.fretLine}" stroke-width="1.5" stroke-linecap="round"/>`;
+  // Always draw rightmost edge
+  svg += `<line x1="${STR_LBL+boardW}" y1="${boardTop}" x2="${STR_LBL+boardW}" y2="${boardBottom}" stroke="${C.fretLine}" stroke-width="1.5" stroke-linecap="round"/>`;
+
+  // ── Fret number labels below board — one per slot
+  for (let si = 0; si < N; si++) {
+    const f  = slots[si];
+    const cx = STR_LBL + (si + 0.5) * SLOT_W;
+    svg += `<text x="${cx}" y="${boardBottom + 42}" text-anchor="middle" font-family="Courier Prime,monospace" font-size="28" font-weight="bold" fill="${C.dim}">${f}</text>`;
+  }
+
+  // ── String lines + labels
+  const strLabels = ['E','A','D','G','B','e'];
+  const strThick  = [1.8,1.6,1.4,1.1,0.9,0.7];
+  for (let s = 0; s < 6; s++) {
+    const y = strY(s);
+    svg += `<line x1="${STR_LBL}" y1="${y}" x2="${STR_LBL+boardW}" y2="${y}" stroke="${C.string}" stroke-width="${strThick[s]}" stroke-linecap="round"/>`;
+    svg += `<text x="${STR_LBL-6}" y="${y+6}" text-anchor="end" font-family="Courier Prime,monospace" font-size="16" font-weight="bold" fill="${C.dim}">${strLabels[s]}</text>`;
+  }
+
+  // ── Note circles
+  const R = 24;
+  for (const n of fingering) {
+    const x      = noteX(n.fret);
+    const y      = strY(n.string);
+    const isRoot    = n.degree === '1';
+    const isRelRoot = relRootIdx >= 0 && noteIdx(n.note) === relRootIdx && !isRoot;
+    const fill   = isRoot ? C.root    : isRelRoot ? C.relRoot : C.note;
+    const ring   = isRoot ? C.rootRing: isRelRoot ? C.relRing : C.noteRing;
+    const tFill  = (isRoot || isRelRoot) ? '#fff' : C.text;
+
+    svg += `<circle cx="${x}" cy="${y+1}" r="${R}" fill="#00000022"/>`;
+    svg += `<circle cx="${x}" cy="${y}"   r="${R}" fill="${fill}" stroke="${ring}" stroke-width="2"/>`;
+
+    let lbl = '';
+    if      (labelMode === 'notes')   lbl = n.note;
+    else if (labelMode === 'fingers') lbl = n.fret === 0 ? 'O' : (n.finger > 0 ? String(n.finger) : '');
+    else if (labelMode === 'degrees') lbl = n.degree;
+    if (lbl) {
+      const fs = lbl.length > 2 ? 16 : lbl.length > 1 ? 20 : 24;
+      svg += `<text x="${x}" y="${y+8}" text-anchor="middle" font-family="Courier Prime,monospace" font-size="${fs}" font-weight="bold" fill="${tFill}">${lbl}</text>`;
+    }
+  }
+
+  // ── Legend
+  const legY = H - 18;
+  svg += `<circle cx="${STR_LBL+10}"  cy="${legY}" r="10" fill="${C.root}"   stroke="${C.rootRing}" stroke-width="1.5"/>`;
+  svg += `<text   x="${STR_LBL+26}"   y="${legY+6}" font-family="Courier Prime,monospace" font-size="16" fill="${C.dim}">root</text>`;
+  let legOff = 90;
+  if (relRootName) {
+    svg += `<circle cx="${STR_LBL+legOff+10}" cy="${legY}" r="10" fill="${C.relRoot}" stroke="${C.relRing}" stroke-width="1.5"/>`;
+    svg += `<text   x="${STR_LBL+legOff+26}"  y="${legY+6}" font-family="Courier Prime,monospace" font-size="16" fill="${C.dim}">${relRootName} (rel.)</text>`;
+    legOff += 130;
+  }
+  svg += `<circle cx="${STR_LBL+legOff+10}" cy="${legY}" r="10" fill="${C.note}"   stroke="${C.noteRing}" stroke-width="1.5"/>`;
+  svg += `<text   x="${STR_LBL+legOff+26}"  y="${legY+6}" font-family="Courier Prime,monospace" font-size="16" fill="${C.dim}">scale tone</text>`;
+
+  svg += `</svg>`;
+  return svg;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DATA — 25 SCALES
+// ═══════════════════════════════════════════════════════════════════
+const SCALES = [
+  { name:'A',  type:'Major Pentatonic',  notes:['A','B','C#','E','F#'],         chords:['A','Bm','C#m','E','F#m'],          relative:'F# Minor Pentatonic', relRoot:'F#' },
+  { name:'A',  type:'Natural Minor',     notes:['A','B','C','D','E','F','G'],   chords:['Am','Bø','C','Dm','Em','F','G'],    relative:'C Major',             relRoot:'C'  },
+  { name:'C',  type:'Major',             notes:['C','D','E','F','G','A','B'],   chords:['C','Dm','Em','F','G','Am','Bø'],    relative:'A Natural Minor',     relRoot:'A'  },
+  { name:'G',  type:'Major',             notes:['G','A','B','C','D','E','F#'],  chords:['G','Am','Bm','C','D','Em','F#ø'],  relative:'E Natural Minor',     relRoot:'E'  },
+  { name:'E',  type:'Minor Pentatonic',  notes:['E','G','A','B','D'],           chords:['Em','G','A','Bm','D'],             relative:'G Major Pentatonic',  relRoot:'G'  },
+  { name:'E',  type:'Blues',             notes:['E','G','A','A#','B','D'],      chords:['E7','A7','B7'],                    relative:'G Major Blues',        relRoot:'G'  },
+  { name:'A',  type:'Blues',             notes:['A','C','D','D#','E','G'],      chords:['A7','D7','E7'],                    relative:'C Major Blues',        relRoot:'C'  },
+  { name:'D',  type:'Dorian',            notes:['D','E','F','G','A','B','C'],   chords:['Dm','Em','F','G','Am','Bø','C'],   relative:'C Major',             relRoot:'C'  },
+  { name:'G',  type:'Mixolydian',        notes:['G','A','B','C','D','E','F'],   chords:['G','Am','Bø','C','Dm','Em','F'],   relative:'C Major',             relRoot:'C'  },
+  { name:'E',  type:'Phrygian',          notes:['E','F','G','A','B','C','D'],   chords:['Em','F','G','Am','Bø','C','Dm'],   relative:'C Major',             relRoot:'C'  },
+  { name:'B',  type:'Minor Pentatonic',  notes:['B','D','E','F#','A'],          chords:['Bm','D','E','F#m','A'],            relative:'D Major Pentatonic',  relRoot:'D'  },
+  { name:'D',  type:'Major',             notes:['D','E','F#','G','A','B','C#'], chords:['D','Em','F#m','G','A','Bm','C#ø'], relative:'B Natural Minor',     relRoot:'B'  },
+  { name:'F',  type:'Major',             notes:['F','G','A','A#','C','D','E'],  chords:['F','Gm','Am','A#','C','Dm','Eø'],  relative:'D Natural Minor',     relRoot:'D'  },
+  { name:'C',  type:'Minor Pentatonic',  notes:['C','D#','F','G','A#'],         chords:['Cm','D#','F','Gm','A#'],           relative:'D# Major Pentatonic', relRoot:'D#' },
+  { name:'A',  type:'Harmonic Minor',    notes:['A','B','C','D','E','F','G#'],  chords:['Am','Bø','Caug','Dm','E','F','G#°'],relative:'C Maj ♯7',            relRoot:'C'  },
+  { name:'E',  type:'Harmonic Minor',    notes:['E','F#','G','A','B','C','D#'], chords:['Em','F#ø','Gaug','Am','B','C','D#°'],relative:'G Maj ♯7',           relRoot:'G'  },
+  { name:'C',  type:'Lydian',            notes:['C','D','E','F#','G','A','B'],  chords:['C','D','Em','F#ø','G','Am','Bm'],  relative:'G Major',             relRoot:'G'  },
+  { name:'B',  type:'Locrian',           notes:['B','C','D','E','F','G','A'],   chords:['Bø','C','Dm','Em','F','G','Am'],   relative:'C Major',             relRoot:'C'  },
+  { name:'A',  type:'Melodic Minor',     notes:['A','B','C','D','E','F#','G#'], chords:['Am','Bm','Caug','D','E','F#ø','G#°'],relative:'See note',          relRoot:'—'  },
+  { name:'C',  type:'Whole Tone',        notes:['C','D','E','F#','G#','A#'],    chords:['Caug','Daug','Eaug'],              relative:'(Symmetric)',          relRoot:'—'  },
+  { name:'A',  type:'Diminished (H-W)', notes:['A','A#','C','C#','D#','E','F#','G'],chords:['A°','C°','D#°','F#°'],       relative:'(Symmetric)',          relRoot:'—'  },
+  { name:'E',  type:'Major Pentatonic',  notes:['E','F#','G#','B','C#'],        chords:['E','F#m','G#m','B','C#m'],        relative:'C# Minor Pentatonic', relRoot:'C#' },
+  { name:'G',  type:'Minor Pentatonic',  notes:['G','A#','C','D','F'],          chords:['Gm','A#','C','Dm','F'],           relative:'A# Major Pentatonic', relRoot:'A#' },
+  { name:'D',  type:'Blues',             notes:['D','F','G','G#','A','C'],      chords:['D7','G7','A7'],                   relative:'F Major Blues',        relRoot:'F'  },
+  { name:'C',  type:'Mixolydian',        notes:['C','D','E','F','G','A','A#'],  chords:['C','Dm','Eø','F','Gm','Am','A#'], relative:'F Major',             relRoot:'F'  },
+];
+
+// ── Bonus: C Major Complete — 7 Modal Patterns (K. Hicks method, weeks 26-32)
+const MODAL_SCALES = [
+  { name:'C', type:'Major',      notes:['C','D','E','F','G','A','B'],   chords:['C','Dm','Em','F','G','Am','Bø'],   relative:'A Natural Minor',  relRoot:'A',  mode:'Pattern 1 — Ionian',    modeDesc:'The major scale. Bright, happy. Root on A string fret 3.' },
+  { name:'D', type:'Dorian',     notes:['D','E','F','G','A','B','C'],   chords:['Dm','Em','F','G','Am','Bø','C'],  relative:'C Major',          relRoot:'C',  mode:'Pattern 2 — Dorian',    modeDesc:'Minor with raised 6th. Jazz/blues feel. Root on A string fret 5.' },
+  { name:'E', type:'Phrygian',   notes:['E','F','G','A','B','C','D'],   chords:['Em','F','G','Am','Bø','C','Dm'],  relative:'C Major',          relRoot:'C',  mode:'Pattern 3 — Phrygian',  modeDesc:'Minor with flat 2nd. Spanish/flamenco sound. Root on low-E fret 0.' },
+  { name:'F', type:'Lydian',     notes:['F','G','A','B','C','D','E'],   chords:['F','G','Am','Bø','C','Dm','Em'],  relative:'C Major',          relRoot:'C',  mode:'Pattern 4 — Lydian',    modeDesc:'Major with raised 4th. Dreamy, floating quality. Root on low-E fret 1.' },
+  { name:'G', type:'Mixolydian', notes:['G','A','B','C','D','E','F'],   chords:['G','Am','Bø','C','Dm','Em','F'],  relative:'C Major',          relRoot:'C',  mode:'Pattern 5 — Mixolydian',modeDesc:'Major with flat 7th. Blues/rock dominant feel. Root on low-E fret 3.' },
+  { name:'A', type:'Natural Minor', notes:['A','B','C','D','E','F','G'],chords:['Am','Bø','C','Dm','Em','F','G'],  relative:'C Major',          relRoot:'C',  mode:'Pattern 6 — Aeolian',   modeDesc:'Natural minor scale. Dark, melancholic. Root on low-E fret 5.' },
+  { name:'B', type:'Locrian',    notes:['B','C','D','E','F','G','A'],   chords:['Bø','C','Dm','Em','F','G','Am'],  relative:'C Major',          relRoot:'C',  mode:'Pattern 7 — Locrian',   modeDesc:'Diminished feel. Unstable, rarely used as tonic. Root on low-E fret 7.' },
+];
+// Position fret labels use ZONE_NAMES (fixed zones 0-3, 3-6, 6-9, 9-12, 12-15)
+
+const CAGED_SHAPES = ['Open Position','Lower Neck','Mid Neck','Upper Mid','High Neck'];
+
+function buildSchedule() {
+  const sched = []; let si = 0;
+  // Weeks 1-25: original programme — test every 4th week
+  for (let w = 1; w <= 25; w++) {
+    if (w % 4 === 0) sched.push({ week:w, type:'test',  scale: SCALES[si-1] });
+    else             sched.push({ week:w, type:'learn', scale: SCALES[si++]  });
+  }
+  // Weeks 26-32: C Major complete — 7 modal patterns bonus module
+  MODAL_SCALES.forEach((scale, i) => {
+    sched.push({ week: 26 + i, type: 'modal', scale });
+  });
+  return sched;
+}
+const SCHEDULE = buildSchedule();
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+function loadState() { try { return JSON.parse(localStorage.getItem('gst_v2')||'null'); } catch{ return null; } }
+function saveState() { localStorage.setItem('gst_v2', JSON.stringify(STATE)); }
+let STATE = loadState() || { currentWeek:1, weekData:{}, viewingRelative:false };
+function getWD(w) {
+  if (!STATE.weekData[w]) STATE.weekData[w] = { positionsDone:[], dailyMins:{}, reviewDone:[], testScore:null, reps:{}, dayNotes:{}, runScores:[], metroSessions:[] };
+  if (!STATE.weekData[w].reps) STATE.weekData[w].reps = {};
+  if (!STATE.weekData[w].dayNotes) STATE.weekData[w].dayNotes = {};
+  if (!STATE.weekData[w].runScores) STATE.weekData[w].runScores = [];
+  if (!STATE.weekData[w].metroSessions) STATE.weekData[w].metroSessions = [];
+  return STATE.weekData[w];
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════════════════
+let timerInterval=null, timerSecs=0, timerRunning=false, timerPos=0, timerDuration=120;
+let timerLastSavedSecs=0; // track how many secs already saved to daily log
+
+function fmtTime(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+function todayDayName(){
+  const idx = new Date().getDay(); // 0=Sun..6=Sat
+  return DAYS[idx === 0 ? 6 : idx - 1]; // DAYS is Mon-indexed
+}
+
+function startTimer(posIdx, duration){
+  timerPos=posIdx; timerSecs=0; timerRunning=true;
+  timerDuration = duration || 120;
+  timerLastSavedSecs = 0;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timerSecs++;
+    const d=document.getElementById('timer-display');
+    if(d) d.textContent=fmtTime(timerSecs);
+    const md=document.getElementById('modal-timer-display');
+    if(md) md.textContent=fmtTime(timerSecs);
+    // Accumulate to daily log every 60 seconds
+    const newMins = Math.floor(timerSecs / 60);
+    const savedMins = Math.floor(timerLastSavedSecs / 60);
+    if(newMins > savedMins){
+      const wd = getWD(STATE.currentWeek);
+      const day = todayDayName();
+      wd.dailyMins[day] = (wd.dailyMins[day]||0) + (newMins - savedMins);
+      timerLastSavedSecs = timerSecs;
+      saveState();
+    }
+    if(timerSecs>=timerDuration){ stopTimer(true); }
+  },1000);
+  const md=document.getElementById('modal-timer-display');
+  if(md) md.textContent='00:00';
+}
+
+function stopTimer(auto){
+  clearInterval(timerInterval); timerRunning=false;
+  // Only save complete minutes — discard any remaining partial minute
+  const totalWholeMins = Math.floor(timerSecs / 60);
+  const alreadySavedMins = Math.floor(timerLastSavedSecs / 60);
+  const remaining = totalWholeMins - alreadySavedMins;
+  if(remaining > 0){
+    const wd = getWD(STATE.currentWeek);
+    const day = todayDayName();
+    wd.dailyMins[day] = (wd.dailyMins[day]||0) + remaining;
+    saveState();
+  }
+  if(timerSecs>=90){ markPositionDone(timerPos); showToast(`Position ${timerPos+1} complete! ✓`); }
+  renderTodayPage();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════════════════════════════════════
+function markPositionDone(posIdx){
+  const wd=getWD(STATE.currentWeek);
+  if(!wd.positionsDone.includes(posIdx)) wd.positionsDone.push(posIdx);
+  saveState();
+}
+function togglePositionDone(posIdx){
+  const wd=getWD(STATE.currentWeek);
+  wd.positionsDone=wd.positionsDone.includes(posIdx)
+    ? wd.positionsDone.filter(x=>x!==posIdx) : [...wd.positionsDone, posIdx];
+  saveState(); renderTodayPage();
+}
+// rep key: pos0_scale | pos0_chord | pos0_pos  (30 reps each = position done)
+function getRep(week,key){ return (getWD(week).reps||{})[key]||0; }
+function addRep(week,key,delta){
+  const wd=getWD(week);
+  if(!wd.reps) wd.reps={};
+  wd.reps[key]=Math.max(0,(wd.reps[key]||0)+delta);
+  // auto-mark position done when all 3 counters hit 30
+  const m=key.match(/^pos(\d+)_/);
+  if(m){
+    const i=parseInt(m[1]);
+    const all30=['scale','chord'].every(t=>(wd.reps[`pos${i}_${t}`]||0)>=30);
+    if(all30 && !wd.positionsDone.includes(i)) wd.positionsDone.push(i);
+    if(!all30) wd.positionsDone=wd.positionsDone.filter(x=>x!==i);
+  }
+  saveState(); renderTodayPage();
+}
+function markReviewDone(idx){
+  const wd=getWD(STATE.currentWeek);
+  if(!wd.reviewDone.includes(idx)) wd.reviewDone.push(idx);
+  saveState(); renderTodayPage();
+}
+function logDailyMins(day, mins){
+  getWD(STATE.currentWeek).dailyMins[day]=parseInt(mins)||0;
+  saveState(); renderTodayPage();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  REVIEW PICKER
+// ═══════════════════════════════════════════════════════════════════
+function getReviewScales(w){
+  const pool=SCHEDULE.filter(s=>s.type==='learn'&&s.week<w);
+  if(pool.length<1) return [];
+  if(pool.length<2) return [pool[0].scale];
+  const seed=w*137;
+  const arr=[...pool];
+  for(let i=arr.length-1;i>0;i--){ const j=(seed*(i+1))%(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr.slice(0,2).map(s=>s.scale);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  FORMULA STEPS HTML
+// ═══════════════════════════════════════════════════════════════════
+function renderFormulaSteps(rootName, scaleType, notes) {
+  const intervals = SCALE_FORMULAS[scaleType] || [];
+  if (!intervals.length) return '';
+  const steps = stepsFromIntervals(intervals);
+  const stepColors = { W:'var(--gold)', H:'var(--red)', WH:'var(--blue)', W2:'#44aaaa', '?':'var(--ink-faint)' };
+  const stepNames  = { W:'Whole', H:'Half', WH:'1½', W2:'2 Whole', '?':'?' };
+
+  let html = '<div class="card-subtitle" style="margin-top:14px;">Scale Formula — Step Pattern</div>';
+  html += '<div class="formula-row">';
+  notes.forEach((note, i) => {
+    const isRoot = i === 0;
+    html += `<div class="formula-step">
+      <div class="fstep-note${isRoot?' root-f':''}">${note}</div>
+      ${i < steps.length ? `<div class="fstep-interval ${steps[i]}" style="color:${stepColors[steps[i]]};">${steps[i]}</div>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+
+  // Legend
+  html += '<div class="formula-legend">';
+  const seen = new Set();
+  steps.forEach(s => {
+    if (!seen.has(s)) {
+      seen.add(s);
+      html += `<div class="fl-item" style="color:${stepColors[s]}">
+        <span style="font-weight:bold">${s}</span> = ${stepNames[s]} step
+      </div>`;
+    }
+  });
+  html += '</div>';
+  return html;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  CHORD VOICING ENGINE
+// ═══════════════════════════════════════════════════════════════════
+
+// Chord quality → intervals from root (semitones)
+const CHORD_INTERVALS = {
+  'maj':  [0, 4, 7],
+  'min':  [0, 3, 7],
+  'dim':  [0, 3, 6],
+  'aug':  [0, 4, 8],
+  'maj7': [0, 4, 7, 11],
+  'min7': [0, 3, 7, 10],
+  'dom7': [0, 4, 7, 10],
+  'dim7': [0, 3, 6, 9],
+  'hdim': [0, 3, 6, 10],  // half-diminished
+  'sus2': [0, 2, 7],
+  'sus4': [0, 5, 7],
+};
+
+// Parse chord symbol → {root, quality}
+// Handles: C, Cm, Cdim, Caug, C7, Cmaj7, Cm7, Cø, C°, Bø, F#ø etc.
+function parseChordSymbol(sym) {
+  // strip trailing ° → dim, ø → hdim
+  let s = sym.trim();
+  const isHdim = s.endsWith('ø') || s.endsWith('Ø');
+  const isDim7 = s.endsWith('°');
+  if (isHdim || isDim7) s = s.slice(0, -1);
+
+  // root: 1 or 2 chars
+  let root = s[0];
+  let rest = s.slice(1);
+  if (rest.startsWith('#') || rest.startsWith('b')) {
+    root += rest[0];
+    rest = rest.slice(1);
+  }
+
+  let quality;
+  if (isHdim)        quality = 'hdim';
+  else if (isDim7)   quality = 'dim7';
+  else if (rest === 'm' || rest === 'min') quality = 'min';
+  else if (rest === 'dim')  quality = 'dim';
+  else if (rest === 'aug')  quality = 'aug';
+  else if (rest === 'maj7') quality = 'maj7';
+  else if (rest === 'm7')   quality = 'min7';
+  else if (rest === '7')    quality = 'dom7';
+  else                      quality = 'maj';
+
+  return { root, quality };
+}
+
+// Build a playable chord voicing within a position zone.
+// Strategy: find the best 4-fret hand window that covers the most chord tones,
+// then assign one note per string strictly within that window.
+// ═══════════════════════════════════════════════════════════════════
+//  CHORDS DATABASE — CAGED system voicings for all 12 keys
+//  Based on standard CAGED moveable shapes (public domain music theory)
+//  E-shape, A-shape, D-shape barre chords — all positions 0–15 frets
+//  Format: [E,A,D,G,B,e] absolute fret numbers, -1=mute, 0=open
+// ═══════════════════════════════════════════════════════════════════
+const CHORDS_DB = {"C":{"major":[[8,10,10,9,8,8],[-1,3,5,5,5,3],[-1,-1,10,12,13,12]],"minor":[[8,10,10,8,8,8],[-1,3,5,5,4,3],[-1,-1,10,12,13,11]],"dim":[[8,9,10,9,-1,-1],[-1,3,4,5,4,-1]],"hdim":[[-1,3,4,5,5,-1]],"dom7":[[8,10,8,9,8,8],[-1,3,5,3,5,3],[-1,-1,10,12,11,12]],"maj7":[[8,10,9,9,8,8],[-1,3,5,4,5,3]],"min7":[[8,10,8,8,8,8],[-1,3,5,3,4,3]]},"C#":{"major":[[9,11,11,10,9,9],[-1,4,6,6,6,4],[-1,-1,11,13,14,13]],"minor":[[9,11,11,9,9,9],[-1,4,6,6,5,4],[-1,-1,11,13,14,12]],"dim":[[9,10,11,10,-1,-1],[-1,4,5,6,5,-1]],"hdim":[[-1,4,5,6,6,-1]],"dom7":[[9,11,9,10,9,9],[-1,4,6,4,6,4],[-1,-1,11,13,12,13]],"maj7":[[9,11,10,10,9,9],[-1,4,6,5,6,4]],"min7":[[9,11,9,9,9,9],[-1,4,6,4,5,4]]},"D":{"major":[[10,12,12,11,10,10],[-1,5,7,7,7,5],[-1,-1,0,2,3,2],[-1,-1,12,14,15,14]],"minor":[[10,12,12,10,10,10],[-1,5,7,7,6,5],[-1,-1,0,2,3,1],[-1,-1,12,14,15,13]],"dim":[[10,11,12,11,-1,-1],[-1,5,6,7,6,-1]],"hdim":[[-1,5,6,7,7,-1]],"dom7":[[10,12,10,11,10,10],[-1,5,7,5,7,5],[-1,-1,0,2,1,2],[-1,-1,12,14,13,14]],"maj7":[[10,12,11,11,10,10],[-1,5,7,6,7,5]],"min7":[[10,12,10,10,10,10],[-1,5,7,5,6,5]]},"D#":{"major":[[11,13,13,12,11,11],[-1,6,8,8,8,6],[-1,-1,1,3,4,3]],"minor":[[11,13,13,11,11,11],[-1,6,8,8,7,6],[-1,-1,1,3,4,2]],"dim":[[11,12,13,12,-1,-1],[-1,6,7,8,7,-1]],"hdim":[[-1,6,7,8,8,-1]],"dom7":[[11,13,11,12,11,11],[-1,6,8,6,8,6],[-1,-1,1,3,2,3]],"maj7":[[11,13,12,12,11,11],[-1,6,8,7,8,6]],"min7":[[11,13,11,11,11,11],[-1,6,8,6,7,6]]},"E":{"major":[[0,2,2,1,0,0],[12,14,14,13,12,12],[-1,7,9,9,9,7],[-1,-1,2,4,5,4]],"minor":[[0,2,2,0,0,0],[12,14,14,12,12,12],[-1,7,9,9,8,7],[-1,-1,2,4,5,3]],"dim":[[0,1,2,1,-1,-1],[12,13,14,13,-1,-1],[-1,7,8,9,8,-1]],"hdim":[[-1,7,8,9,9,-1]],"dom7":[[0,2,0,1,0,0],[12,14,12,13,12,12],[-1,7,9,7,9,7],[-1,-1,2,4,3,4]],"maj7":[[0,2,1,1,0,0],[12,14,13,13,12,12],[-1,7,9,8,9,7]],"min7":[[0,2,0,0,0,0],[12,14,12,12,12,12],[-1,7,9,7,8,7]]},"F":{"major":[[1,3,3,2,1,1],[-1,8,10,10,10,8],[-1,-1,3,5,6,5]],"minor":[[1,3,3,1,1,1],[-1,8,10,10,9,8],[-1,-1,3,5,6,4]],"dim":[[1,2,3,2,-1,-1],[-1,8,9,10,9,-1]],"hdim":[[-1,8,9,10,10,-1]],"dom7":[[1,3,1,2,1,1],[-1,8,10,8,10,8],[-1,-1,3,5,4,5]],"maj7":[[1,3,2,2,1,1],[-1,8,10,9,10,8]],"min7":[[1,3,1,1,1,1],[-1,8,10,8,9,8]]},"F#":{"major":[[2,4,4,3,2,2],[-1,9,11,11,11,9],[-1,-1,4,6,7,6]],"minor":[[2,4,4,2,2,2],[-1,9,11,11,10,9],[-1,-1,4,6,7,5]],"dim":[[2,3,4,3,-1,-1],[-1,9,10,11,10,-1]],"hdim":[[-1,9,10,11,11,-1]],"dom7":[[2,4,2,3,2,2],[-1,9,11,9,11,9],[-1,-1,4,6,5,6]],"maj7":[[2,4,3,3,2,2],[-1,9,11,10,11,9]],"min7":[[2,4,2,2,2,2],[-1,9,11,9,10,9]]},"G":{"major":[[3,5,5,4,3,3],[-1,10,12,12,12,10],[-1,-1,5,7,8,7]],"minor":[[3,5,5,3,3,3],[-1,10,12,12,11,10],[-1,-1,5,7,8,6]],"dim":[[3,4,5,4,-1,-1],[-1,10,11,12,11,-1]],"hdim":[[-1,10,11,12,12,-1]],"dom7":[[3,5,3,4,3,3],[-1,10,12,10,12,10],[-1,-1,5,7,6,7]],"maj7":[[3,5,4,4,3,3],[-1,10,12,11,12,10]],"min7":[[3,5,3,3,3,3],[-1,10,12,10,11,10]]},"G#":{"major":[[4,6,6,5,4,4],[-1,11,13,13,13,11],[-1,-1,6,8,9,8]],"minor":[[4,6,6,4,4,4],[-1,11,13,13,12,11],[-1,-1,6,8,9,7]],"dim":[[4,5,6,5,-1,-1],[-1,11,12,13,12,-1]],"hdim":[[-1,11,12,13,13,-1]],"dom7":[[4,6,4,5,4,4],[-1,11,13,11,13,11],[-1,-1,6,8,7,8]],"maj7":[[4,6,5,5,4,4],[-1,11,13,12,13,11]],"min7":[[4,6,4,4,4,4],[-1,11,13,11,12,11]]},"A":{"major":[[5,7,7,6,5,5],[-1,0,2,2,2,0],[-1,12,14,14,14,12],[-1,-1,7,9,10,9]],"minor":[[5,7,7,5,5,5],[-1,0,2,2,1,0],[-1,12,14,14,13,12],[-1,-1,7,9,10,8]],"dim":[[5,6,7,6,-1,-1],[-1,0,1,2,1,-1],[-1,12,13,14,13,-1]],"hdim":[[-1,0,1,2,2,-1],[-1,12,13,14,14,-1]],"dom7":[[5,7,5,6,5,5],[-1,0,2,0,2,0],[-1,12,14,12,14,12],[-1,-1,7,9,8,9]],"maj7":[[5,7,6,6,5,5],[-1,0,2,1,2,0],[-1,12,14,13,14,12]],"min7":[[5,7,5,5,5,5],[-1,0,2,0,1,0],[-1,12,14,12,13,12]]},"A#":{"major":[[6,8,8,7,6,6],[-1,1,3,3,3,1],[-1,-1,8,10,11,10]],"minor":[[6,8,8,6,6,6],[-1,1,3,3,2,1],[-1,-1,8,10,11,9]],"dim":[[6,7,8,7,-1,-1],[-1,1,2,3,2,-1]],"hdim":[[-1,1,2,3,3,-1]],"dom7":[[6,8,6,7,6,6],[-1,1,3,1,3,1],[-1,-1,8,10,9,10]],"maj7":[[6,8,7,7,6,6],[-1,1,3,2,3,1]],"min7":[[6,8,6,6,6,6],[-1,1,3,1,2,1]]},"B":{"major":[[7,9,9,8,7,7],[-1,2,4,4,4,2],[-1,-1,9,11,12,11]],"minor":[[7,9,9,7,7,7],[-1,2,4,4,3,2],[-1,-1,9,11,12,10]],"dim":[[7,8,9,8,-1,-1],[-1,2,3,4,3,-1]],"hdim":[[-1,2,3,4,4,-1]],"dom7":[[7,9,7,8,7,7],[-1,2,4,2,4,2],[-1,-1,9,11,10,11]],"maj7":[[7,9,8,8,7,7],[-1,2,4,3,4,2]],"min7":[[7,9,7,7,7,7],[-1,2,4,2,3,2]]}};
+
+
+// Map our chord symbol → DB key + suffix
+// DB keys:  C C# D Eb E F F# G Ab A Bb B
+// DB suffixes relevant: major minor dim dim7 aug 7 maj7 m7 m7b5
+function chordsDbKey(root) {
+  const enharmonic = {'Db':'C#','D#':'Eb','Gb':'F#','G#':'Ab','A#':'Bb','Cb':'B','E#':'F','Fb':'E','B#':'C'};
+  return enharmonic[root] || root;
+}
+function chordsDbSuffix(quality) {
+  const map = {
+    'maj':'major', 'min':'minor', 'dim':'dim', 'dim7':'dim7',
+    'hdim':'hdim', 'aug':'aug', 'dom7':'dom7', 'maj7':'maj7',
+    'min7':'min7', 'sus2':'sus2', 'sus4':'sus4'
+  };
+  return map[quality] || 'major';
+}
+
+// Look up a voicing from CHORDS_DB for a given chord + position zone.
+// Picks the voicing whose fret range best overlaps the zone.
+function lookupVoicingFromDB(chordSym, posIdx) {
+  const { root, quality } = parseChordSymbol(chordSym);
+  const dbKey  = chordsDbKey(root);
+  const dbSuff = chordsDbSuffix(quality);
+  const zoneLo = ZONE_STARTS[posIdx];
+  const zoneHi = zoneLo + 5;
+
+  const voicings = CHORDS_DB[dbKey] && CHORDS_DB[dbKey][dbSuff];
+  if (!voicings || !voicings.length) return null;
+
+  // Score each voicing by overlap with zone
+  function score(v) {
+    const fretted = v.filter(f => f > 0);
+    if (fretted.length < 3) return -1;
+    const lo = Math.min(...fretted), hi = Math.max(...fretted);
+    const span = hi - lo;
+    if (span > 4) return -1;
+    // Count individual fretted notes that fall within the zone
+    const inZone = fretted.filter(f => f >= zoneLo && f <= zoneHi).length;
+    const midFret = (lo + hi) / 2;
+    const midZone = (zoneLo + zoneHi) / 2;
+    const dist = Math.abs(midFret - midZone);
+    return inZone * 10 - dist - span;
+  }
+
+  const sorted = [...voicings].sort((a, b) => score(b) - score(a));
+  const best = sorted[0];
+  if (!best || score(best) < 0) return null;
+  // Convert -1 to 'x'
+  return best.map(f => f === -1 ? 'x' : f);
+}
+
+function buildChordVoicing(chordSym, posIdx) {
+  // Try DB lookup first
+  const dbVoicing = lookupVoicingFromDB(chordSym, posIdx);
+  if (dbVoicing) return dbVoicing;
+
+  const { root, quality } = parseChordSymbol(chordSym);
+  const intervals = CHORD_INTERVALS[quality] || CHORD_INTERVALS['maj'];
+  const ri = noteIdx(root);
+  const chordNotes = intervals.map(i => (ri + i) % 12);
+
+  const zoneLo = ZONE_STARTS[posIdx];
+  const zoneHi = zoneLo + 5;
+  const allowOpen = zoneLo === 0;
+
+  // For each string, collect all chord-tone frets in zone
+  const candidates = [];
+  for (let s = 0; s < 6; s++) {
+    const openIdx = noteIdx(OPEN_STRINGS[s]);
+    const opts = [];
+    for (const ci of chordNotes) {
+      const baseDiff = (ci - openIdx + 12) % 12;
+      let fret = baseDiff;
+      while (fret < zoneLo) fret += 12;
+      if (fret <= zoneHi) opts.push(fret);
+      if (allowOpen && fret === 12 && !opts.includes(0)) opts.push(0);
+    }
+    opts.sort((a,b) => a-b);
+    candidates.push(opts);
+  }
+
+  // Collect all fretted candidate frets
+  const allFrettedFrets = [...new Set(
+    candidates.flatMap(opts => opts.filter(f => f > 0))
+  )].sort((a,b) => a-b);
+
+  // Find the 4-fret window [lo, lo+3] that covers the most strings with chord tones
+  // Try all possible windows anchored at each candidate fret
+  let bestWindow = { lo: zoneLo, hi: zoneLo + 3, coverage: 0 };
+  for (const anchor of allFrettedFrets) {
+    const winLo = anchor;
+    const winHi = anchor + 3;
+    let coverage = 0;
+    for (const opts of candidates) {
+      if (opts.some(f => f >= winLo && f <= winHi)) coverage++;
+    }
+    if (coverage > bestWindow.coverage) bestWindow = { lo: winLo, hi: winHi, coverage };
+  }
+
+  // Also try open position window if allowed
+  if (allowOpen) {
+    const openCoverage = candidates.filter(opts => opts.some(f => f === 0)).length
+      + candidates.filter(opts => opts.some(f => f >= 1 && f <= 3)).length;
+    if (openCoverage >= bestWindow.coverage) bestWindow = { lo: 0, hi: 3, coverage: openCoverage };
+  }
+
+  const { lo: wLo, hi: wHi } = bestWindow;
+  const wMid = (wLo + wHi) / 2; // target midpoint for smooth shape
+
+  // Assign one note per string: pick fret closest to window midpoint
+  const result = candidates.map(opts => {
+    const inWindow = opts.filter(f => (f === 0 && wLo === 0) || (f >= wLo && f <= wHi));
+    if (!inWindow.length) return 'x';
+    const fretted = inWindow.filter(f => f > 0);
+    const pool = fretted.length ? fretted : inWindow;
+    // Pick closest to midpoint for a natural hand shape
+    return pool.reduce((best, f) =>
+      Math.abs(f - wMid) < Math.abs(best - wMid) ? f : best
+    );
+  });
+
+  // Mute bass strings (low-E, A) if they have no chord tone in window
+  if (result[0] === 'x') result[0] = 'x';
+  if (result[1] === 'x') result[1] = 'x';
+
+  // Mute low-E (s=0) if it's open AND the A string (s=1) has the root —
+  // standard practice: start bass from the root string, not an open 5th below
+  if (result[0] === 0) {
+    const aFret = result[1];
+    if (aFret !== 'x') {
+      const aNoteIdx = (noteIdx(OPEN_STRINGS[1]) + (aFret > 0 ? aFret : 0)) % 12;
+      if (aNoteIdx === ri % 12) result[0] = 'x';
+    }
+  }
+
+  // Mute interior open strings (sandwiched between fretted notes)
+  for (let s = 1; s < 5; s++) {
+    if (result[s] === 0) {
+      const hasLower  = result.slice(0, s).some(v => v !== 'x' && v > 0);
+      const hasHigher = result.slice(s+1).some(v => v !== 'x' && v > 0);
+      if (hasLower && hasHigher) result[s] = 'x';
+    }
+  }
+
+  // Ensure at least 3 strings sound — if not, expand window by 1 fret each side
+  if (result.filter(v => v !== 'x').length < 3) {
+    for (let s = 0; s < 6; s++) {
+      if (result[s] !== 'x') continue;
+      const opts = candidates[s];
+      const expanded = opts.filter(f => f > 0 && f >= wLo - 1 && f <= wHi + 1);
+      if (expanded.length) result[s] = expanded[0];
+    }
+  }
+
+  return result;
+}
+
+// ── Chord tone degree label (1, 3, 5, 7 etc.) for a given note on a string at a fret
+function chordNoteDegree(chordSym, stringIdx, fret) {
+  const { root, quality } = parseChordSymbol(chordSym);
+  const intervals = CHORD_INTERVALS[quality] || CHORD_INTERVALS['maj'];
+  const ri = noteIdx(root);
+  const openIdx = noteIdx(OPEN_STRINGS[stringIdx]);
+  const noteI = (openIdx + fret) % 12;
+  const semi = (noteI - ri + 12) % 12;
+  // Map semitone → chord degree label
+  const degMap = {0:'1', 2:'2', 3:'b3', 4:'3', 5:'4', 6:'b5', 7:'5', 8:'b6', 9:'6', 10:'b7', 11:'7'};
+  return degMap[semi] || '?';
+}
+
+function chordNoteNameAt(stringIdx, fret) {
+  const openIdx = noteIdx(OPEN_STRINGS[stringIdx]);
+  return CHROMA[(openIdx + fret) % 12];
+}
+
+// ── Render a single chord diagram as an SVG
+// labelMode: 'fingers' | 'notes' | 'degrees'
+function renderChordSVG(chordSym, posIdx, labelMode) {
+  labelMode = labelMode || 'fingers';
+  const { root, quality } = parseChordSymbol(chordSym);
+  const voicing = buildChordVoicing(chordSym, posIdx);
+
+  // Uniform large sizing — wide enough for any label mode
+  const SW     = 140;
+  const SH     = 200;
+  const LEFT   = 22;
+  const TOP    = 36;
+  const FRET_H = 34;
+  const STR_W  = 20;
+  const NFRETS = 4;
+  const R      = 14;
+
+  const boardW = STR_W * 5;
+
+  const frettedFrets = voicing.filter(v => v !== 'x' && v > 0);
+  const minFret = frettedFrets.length ? Math.min(...frettedFrets) : 0;
+  const showNut = minFret === 0;
+  const fretOffset = showNut ? 0 : minFret - 1;
+
+  const C = {
+    bg:      '#fdf6e3',
+    nut:     '#3a2a10',
+    fret:    '#b09050',
+    string:  '#9a8050',
+    root:    '#c87941',
+    note:    '#f0e6cc',
+    noteRng: '#8b6a2a',
+    rootRng: '#7a4010',
+    mute:    '#8b6a2a',
+    dim:     '#8b6a2a',
+    text:    '#1a0e04',
+    textLt:  '#ffffff',
+  };
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SW}" height="${SH}" viewBox="0 0 ${SW} ${SH}">`;
+  svg += `<rect width="${SW}" height="${SH}" fill="${C.bg}"/>`;
+
+  const strX = s => LEFT + s * STR_W;
+  const fretY = f => TOP + f * FRET_H;
+
+  // Fret lines
+  for (let f = 0; f <= NFRETS; f++) {
+    const y  = fretY(f);
+    const isN = f === 0 && showNut;
+    svg += `<line x1="${LEFT}" y1="${y}" x2="${LEFT + boardW}" y2="${y}" stroke="${isN ? C.nut : C.fret}" stroke-width="${isN ? 3.5 : 1}" stroke-linecap="round"/>`;
+  }
+
+  // Inlay marker dots — centred horizontally in the board, centred vertically in each fret slot
+  // Slot f (1..NFRETS) corresponds to actual fret number fretOffset + f
+  const MARKER_FRETS_CHORD = new Set([3,5,7,9,12,15,17,19,21]);
+  const DOUBLE_FRETS_CHORD  = new Set([12,24]);
+  const markerCX = LEFT + boardW / 2;       // horizontal centre of board
+  for (let f = 1; f <= NFRETS; f++) {
+    const actualFret = fretOffset + f;
+    const slotCY = fretY(f) - FRET_H / 2;  // vertical centre of this fret slot
+    if (DOUBLE_FRETS_CHORD.has(actualFret)) {
+      // Two dots side by side
+      svg += `<circle cx="${markerCX - 6}" cy="${slotCY}" r="3" fill="#c8a860" opacity="0.5"/>`;
+      svg += `<circle cx="${markerCX + 6}" cy="${slotCY}" r="3" fill="#c8a860" opacity="0.5"/>`;
+    } else if (MARKER_FRETS_CHORD.has(actualFret)) {
+      svg += `<circle cx="${markerCX}" cy="${slotCY}" r="3" fill="#c8a860" opacity="0.5"/>`;
+    }
+  }
+
+  // String lines
+  for (let s = 0; s < 6; s++) {
+    svg += `<line x1="${strX(s)}" y1="${fretY(0)}" x2="${strX(s)}" y2="${fretY(NFRETS)}" stroke="${C.string}" stroke-width="1" stroke-linecap="round"/>`;
+  }
+
+  // Fret position marker
+  if (!showNut && minFret > 0) {
+    svg += `<text x="${LEFT + boardW + 3}" y="${fretY(1) + 8}" font-family="Courier Prime,monospace" font-size="12" fill="${C.dim}">${minFret}fr</text>`;
+  }
+
+  // Build finger assignment: sort sounding frets ascending → finger 1..4
+  const soundingFrets = voicing
+    .map((v, s) => v !== 'x' && v > 0 ? {s, fret: v} : null)
+    .filter(Boolean)
+    .sort((a,b) => a.fret - b.fret);
+  const fingerMap = {}; // string → finger number
+  const uniqFretsSorted = [...new Set(soundingFrets.map(x => x.fret))].sort((a,b)=>a-b);
+  soundingFrets.forEach(({s, fret}) => {
+    fingerMap[s] = Math.min(4, uniqFretsSorted.indexOf(fret) + 1);
+  });
+
+  // Notes
+  // Enforce muting: any string below the first sounding string stays x
+  const firstSounding = voicing.findIndex(v => v !== 'x');
+  for (let s = 0; s < 6; s++) {
+    const v = voicing[s];
+    const x = strX(s);
+    const effectiveV = (s < firstSounding && firstSounding > 0) ? 'x' : v;
+
+    if (effectiveV === 'x') {
+      // Muted — × above nut
+      svg += `<text x="${x}" y="${fretY(0) - 10}" text-anchor="middle" font-family="Courier Prime,monospace" font-size="14" fill="${C.mute}">x</text>`;
+    } else if (effectiveV === 0) {
+      // Open string — circle above nut, label depends on labelMode
+      const isRoot = noteIdx(OPEN_STRINGS[s]) % 12 === noteIdx(root) % 12;
+      const fill   = isRoot ? C.root : 'none';
+      const stroke = isRoot ? C.rootRng : C.noteRng;
+      const tFill  = C.textLt;
+      svg += `<circle cx="${x}" cy="${fretY(0) - 16}" r="${R - 1}" fill="${fill}" stroke="${stroke}" stroke-width="1.8"/>`;
+      let openLabel = '';
+      if      (labelMode === 'notes')   openLabel = CHROMA[noteIdx(OPEN_STRINGS[s])];
+      else if (labelMode === 'degrees') openLabel = chordNoteDegree(chordSym, s, 0);
+      else if (labelMode === 'fingers') openLabel = isRoot ? '1' : '0';
+      if (openLabel) {
+        const fs = openLabel.length > 1 ? 9 : 11;
+        svg += `<text x="${x}" y="${fretY(0) - 12}" text-anchor="middle" font-family="Courier Prime,monospace" font-size="${fs}" font-weight="bold" fill="${tFill}">${openLabel}</text>`;
+      }
+    } else {
+      const fretSlot = v - fretOffset;
+      if (fretSlot >= 1 && fretSlot <= NFRETS) {
+        const y      = fretY(fretSlot) - FRET_H / 2;
+        const isRoot = (noteIdx(OPEN_STRINGS[s]) + v) % 12 === noteIdx(root) % 12;
+        const fill   = isRoot ? C.root : C.note;
+        const ring   = isRoot ? C.rootRng : C.noteRng;
+        const tFill  = isRoot ? C.textLt : C.text;
+
+        svg += `<circle cx="${x}" cy="${y}" r="${R}" fill="${fill}" stroke="${ring}" stroke-width="1.6"/>`;
+
+        // Label inside fretted circle — strictly follows labelMode
+        let label = '';
+        if      (labelMode === 'fingers') label = String(fingerMap[s] || '');
+        else if (labelMode === 'notes')   label = chordNoteNameAt(s, v);
+        else if (labelMode === 'degrees') label = chordNoteDegree(chordSym, s, v);
+
+        if (label) {
+          const fs = label.length > 2 ? 11 : label.length > 1 ? 14 : 17;
+          svg += `<text x="${x}" y="${y + 6}" text-anchor="middle" font-family="Courier Prime,monospace" font-size="${fs}" font-weight="bold" fill="${tFill}">${label}</text>`;
+        }
+      }
+    }
+  }
+
+  svg += `</svg>`;
+  return svg;
+}
+
+// ── Render the full chord diagrams section for a position
+function renderChordDiagrams(scale, posIdx, labelMode) {
+  if (!scale.chords || !scale.chords.length) return '';
+  labelMode = labelMode || 'fingers';
+
+  let html = `<div class="card-subtitle" style="margin-top:18px;">Diatonic Chords — Position ${posIdx + 1} Voicings</div>`;
+  html += `<div class="chord-diagrams-wrap" id="chord-diagrams-wrap">`;
+
+  const romanNumerals = ['I','II','III','IV','V','VI','VII'];
+  scale.chords.forEach((chordSym, i) => {
+    const roman = romanNumerals[i] || (i + 1).toString();
+    const { quality } = parseChordSymbol(chordSym);
+    const qualLabel = quality === 'maj' ? 'Major' : quality === 'min' ? 'Minor' :
+                      quality === 'dim' ? 'Dim'   : quality === 'hdim' ? 'Half-dim' :
+                      quality === 'dom7'? 'Dom 7' : quality === 'maj7' ? 'Maj 7' :
+                      quality === 'min7'? 'Min 7' : quality;
+    html += `<div class="chord-diagram-cell">
+      <div class="chord-diagram-name">${roman} — ${chordSym}</div>
+      <div class="chord-diagram-quality">${qualLabel}</div>
+      ${renderChordSVG(chordSym, posIdx, labelMode)}
+    </div>`;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PITCH DETECTION + NOTE VERIFICATION ENGINE
+// ═══════════════════════════════════════════════════════════════════
+
+// Autocorrelation pitch detector (works well for clean/light-OD guitar)
+function detectPitch(buf, sampleRate) {
+  const SIZE = buf.length;
+  const MAX_SAMPLES = Math.floor(SIZE / 2);
+  let best_offset = -1, best_corr = 0;
+  let last_corr = 1, found = false;
+  const THRESHOLD = 0.9;
+
+  for (let offset = 1; offset < MAX_SAMPLES; offset++) {
+    let corr = 0;
+    for (let i = 0; i < MAX_SAMPLES; i++) corr += Math.abs(buf[i] - buf[i + offset]);
+    corr = 1 - (corr / MAX_SAMPLES);
+    if (corr > THRESHOLD && corr > last_corr) {
+      found = true;
+      if (corr > best_corr) { best_corr = corr; best_offset = offset; }
+    }
+    last_corr = corr;
+    if (found && corr < 0.9 * best_corr) break;
+  }
+  if (best_offset === -1) return -1;
+  // Parabolic interpolation for precision
+  const x1 = best_offset - 1, x2 = best_offset, x3 = best_offset + 1;
+  let shift = 0;
+  if (x1 >= 0 && x3 < MAX_SAMPLES) {
+    const y1 = 1 - ((() => { let c=0; for(let i=0;i<MAX_SAMPLES;i++) c+=Math.abs(buf[i]-buf[i+x1]); return c/MAX_SAMPLES; })());
+    const y3 = 1 - ((() => { let c=0; for(let i=0;i<MAX_SAMPLES;i++) c+=Math.abs(buf[i]-buf[i+x3]); return c/MAX_SAMPLES; })());
+    shift = (y3 - y1) / (2 * (2 * best_corr - y1 - y3));
+  }
+  return sampleRate / (best_offset + shift);
+}
+
+// Freq → MIDI note number
+function freqToMidi(freq) {
+  return Math.round(69 + 12 * Math.log2(freq / 440));
+}
+// MIDI → note name (C, C#, D, …)
+function midiToName(midi) {
+  return CHROMA[((midi % 12) + 12) % 12];
+}
+
+const MIC = {
+  ctx: null, stream: null, analyser: null, animFrame: null,
+  armed: null,   // 'scale' | null
+  posIdx: null,
+  week: null,
+  scaleNotes: [],      // set of note names valid for this position+scale
+  // Run state
+  state: 'silent',     // 'silent' | 'playing'
+  playStart: null,
+  silenceStart: null,
+  // Per-run note tracking
+  runNotes: [],        // [{note, correct, time}] detected this run
+  lastNote: null,      // last stable note name detected
+  lastNoteTime: 0,
+  NOTE_STABLE_MS: 60,  // ms a pitch must be stable to register
+  noteOnset: null,     // when current stable pitch started
+  // Run history
+  runHistory: [],      // [{reps, correct, wrong, notes}]
+  // Tuning — generous values so a full scale run (up+down) counts as 1 rep
+  THRESHOLD: 0.015,
+  SILENCE_MS: 1000,    // 1s of silence = end of run
+  MIN_PLAY_MS: 1500,   // run must last 1.5s minimum (filters accidental plucks)
+  // Live display
+  currentNote: null,
+  currentCorrect: null,
+};
+
+function micGetScaleNotes(scale, posIdx) {
+  const intervals = SCALE_FORMULAS[scale.type] || [];
+  return new Set(intervals.map(i => noteAt(scale.name, i)));
+}
+
+async function micArm(week, posIdx, key) {
+  if (MIC.armed === key && MIC.posIdx === posIdx) { micDisarm(); return; }
+  micDisarm();
+  MIC.armed = key; MIC.posIdx = posIdx; MIC.week = week;
+  MIC.state = 'silent'; MIC.silenceStart = null; MIC.playStart = null;
+  MIC.runNotes = []; MIC.lastNote = null; MIC.noteOnset = null;
+  MIC.currentNote = null; MIC.currentCorrect = null;
+  // Build valid note set for this scale+position
+  MIC.scaleNotes = micGetScaleNotes(modalScale, posIdx);
+
+  try {
+    MIC.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    MIC.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = MIC.ctx.createMediaStreamSource(MIC.stream);
+    MIC.analyser = MIC.ctx.createAnalyser();
+    MIC.analyser.fftSize = 4096;  // larger for better low-freq resolution
+    MIC.analyser.smoothingTimeConstant = 0.3;
+    source.connect(MIC.analyser);
+    micLoop();
+    startTimer(posIdx, 130); // 2:10 per position when mic opens
+    renderTabModal();
+  } catch(e) {
+    showToast('Mic access denied or unavailable');
+    MIC.armed = null;
+  }
+}
+
+function micDisarm() {
+  if (MIC.animFrame) { cancelAnimationFrame(MIC.animFrame); MIC.animFrame = null; }
+  if (MIC.stream) { MIC.stream.getTracks().forEach(t => t.stop()); MIC.stream = null; }
+  if (MIC.ctx) { MIC.ctx.close().catch(()=>{}); MIC.ctx = null; }
+  MIC.analyser = null;
+  const wasArmed = MIC.armed;
+  MIC.armed = null; MIC.posIdx = null; MIC.week = null;
+  MIC.state = 'silent'; MIC.runNotes = []; MIC.lastNote = null;
+  MIC.currentNote = null; MIC.currentCorrect = null;
+  if (wasArmed) { stopTimer(false); renderTabModal(); }
+}
+
+function micEndRun() {
+  const playDur = MIC.silenceStart - MIC.playStart;
+  if (playDur < MIC.MIN_PLAY_MS || MIC.runNotes.length < 3) {
+    MIC.state = 'silent'; MIC.silenceStart = null; MIC.playStart = null; MIC.runNotes = [];
+    return;
+  }
+  const correct = MIC.runNotes.filter(n => n.correct).length;
+  const wrong   = MIC.runNotes.filter(n => !n.correct);
+  MIC.runHistory.push({ correct, wrong: wrong.length, notes: [...MIC.runNotes] });
+
+  // Persist score to state
+  const today = DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay()-1];
+  const wd2 = getWD(MIC.week);
+  const wrongNoteNames = [...new Set(wrong.map(n => n.note))];
+  wd2.runScores.push({
+    day: today,
+    pos: MIC.posIdx+1,
+    correct, wrong: wrong.length,
+    total: MIC.runNotes.length,
+    wrongNotes: wrongNoteNames,
+    scaleName: modalScale ? modalScale.name + ' ' + modalScale.type : '',
+    ts: Date.now()
+  });
+  saveState();
+
+  addRep(MIC.week, `pos${MIC.posIdx}_${MIC.armed}`, 1);
+  const val = getRep(MIC.week, `pos${MIC.posIdx}_${MIC.armed}`);
+
+  MIC.state = 'silent'; MIC.silenceStart = null; MIC.playStart = null; MIC.runNotes = [];
+  MIC.currentNote = null; MIC.currentCorrect = null;
+
+  // Flash count element with +1 animation
+  const countEl = document.getElementById('mic-count-scale');
+  if (countEl) {
+    countEl.innerHTML = `<span style="color:var(--accent-bright);font-size:1.8rem;animation:none">+1</span>`;
+    setTimeout(() => {
+      if (countEl) countEl.innerHTML = `${val}<span style="font-size:1.05rem;color:var(--ink-faint);display:block;margin-top:-4px;">/30${val>=30?' ✓':''}</span>`;
+    }, 600);
+  }
+
+  if (val >= 30) {
+    showToast('Scale Runs complete! ✓');
+    micDisarm(); return;
+  }
+  const wrongNotes = [...new Set(wrong.map(n=>n.note))];
+  showToast(wrong.length === 0
+    ? `Run ${val}/30 — perfect ✓`
+    : `Run ${val}/30 — ${wrong.length} wrong note${wrong.length>1?'s':''}: ${wrongNotes.join(', ')}`);
+  setTimeout(renderTabModal, 0);
+}
+
+function micLoop() {
+  if (!MIC.analyser) return;
+  const buf = new Float32Array(MIC.analyser.fftSize);
+  MIC.analyser.getFloatTimeDomainData(buf);
+
+  // RMS
+  let sum = 0;
+  for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+  const rms = Math.sqrt(sum / buf.length);
+  const now = performance.now();
+  const isLoud = rms > MIC.THRESHOLD;
+
+  // Level meter — works for both scale and chord
+  const levelPct = Math.min(100, Math.round(rms / 0.15 * 100));
+  const fillId = MIC.armed === 'scale' ? 'mic-level-fill-scale' : 'mic-level-fill-chord';
+  const fill = document.getElementById(fillId);
+  if (fill) {
+    fill.style.width = levelPct + '%';
+    fill.className = 'mic-level-fill' + (levelPct > 70 ? ' peak' : levelPct > 35 ? ' loud' : '');
+  }
+
+  // Pitch detection (only when loud enough)
+  if (isLoud && MIC.ctx) {
+    const freq = detectPitch(buf, MIC.ctx.sampleRate);
+    if (freq > 60 && freq < 1400) {  // guitar range E2–F6
+      const noteName = midiToName(freqToMidi(freq));
+      if (noteName === MIC.lastNote) {
+        // Stable pitch — check if held long enough to register
+        if (MIC.noteOnset && (now - MIC.noteOnset) >= MIC.NOTE_STABLE_MS) {
+          if (noteName !== MIC.currentNote) {
+            const correct = MIC.scaleNotes.has(noteName);
+            MIC.currentNote = noteName;
+            MIC.currentCorrect = correct;
+            MIC.runNotes.push({ note: noteName, correct, time: now });
+            // Update live note display
+            const noteEl = document.getElementById('mic-live-note');
+            if (noteEl) {
+              noteEl.textContent = noteName;
+              noteEl.style.color = correct ? 'var(--green)' : 'var(--red)';
+            }
+            const statusEl = document.getElementById('mic-live-status');
+            if (statusEl) {
+              statusEl.textContent = correct ? '✓ In scale' : '✗ Wrong note';
+              statusEl.style.color = correct ? 'var(--green)' : 'var(--red)';
+            }
+          }
+        }
+      } else {
+        MIC.lastNote = noteName;
+        MIC.noteOnset = now;
+        MIC.currentNote = null; // reset so next stable note registers
+      }
+    }
+  }
+
+  // Run state machine
+  if (MIC.state === 'silent') {
+    if (isLoud) {
+      MIC.state = 'playing';
+      MIC.playStart = now;
+      MIC.silenceStart = null;
+      MIC.runNotes = [];
+    }
+  } else {
+    if (!isLoud) {
+      if (!MIC.silenceStart) MIC.silenceStart = now;
+      if ((now - MIC.silenceStart) >= MIC.SILENCE_MS) micEndRun();
+    } else {
+      MIC.silenceStart = null;
+    }
+  }
+
+  MIC.animFrame = requestAnimationFrame(micLoop);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  METRONOME ENGINE
+// ═══════════════════════════════════════════════════════════════════
+const METRO = {
+  ctx: null,
+  running: false,
+  bpm: 80,
+  beat: 0,          // current beat (0-indexed)
+  beatsPerBar: 4,
+  nextBeatTime: 0,
+  scheduleAhead: 0.1,   // seconds to schedule ahead
+  lookAhead: 25,        // ms between scheduler calls
+  timerID: null,
+  // Daily log tracking
+  startTime: null,
+  lastBpm: 80,
+};
+
+function metroClick(time, isAccent) {
+  if (!METRO.ctx) return;
+  const osc = METRO.ctx.createOscillator();
+  const gain = METRO.ctx.createGain();
+  osc.connect(gain);
+  gain.connect(METRO.ctx.destination);
+  osc.frequency.value = isAccent ? 1200 : 900;
+  gain.gain.setValueAtTime(isAccent ? 0.5 : 0.3, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+  osc.start(time);
+  osc.stop(time + 0.06);
+}
+
+function metroSchedule() {
+  while (METRO.nextBeatTime < METRO.ctx.currentTime + METRO.scheduleAhead) {
+    const isAccent = METRO.beat === 0;
+    metroClick(METRO.nextBeatTime, isAccent);
+    // Update beat indicator in DOM
+    const beat = METRO.beat;
+    setTimeout(() => {
+      document.querySelectorAll('.metro-beat').forEach((el, i) => {
+        el.classList.toggle('active', i === beat);
+      });
+    }, Math.max(0, (METRO.nextBeatTime - METRO.ctx.currentTime) * 1000 - 10));
+    METRO.beat = (METRO.beat + 1) % METRO.beatsPerBar;
+    METRO.nextBeatTime += 60 / METRO.bpm;
+  }
+  METRO.timerID = setTimeout(metroSchedule, METRO.lookAhead);
+}
+
+function metroStart() {
+  if (METRO.running) return;
+  METRO.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  METRO.running = true;
+  METRO.beat = 0;
+  METRO.nextBeatTime = METRO.ctx.currentTime + 0.1;
+  METRO.startTime = Date.now();
+  METRO.lastBpm = METRO.bpm;
+  metroSchedule();
+  renderTabModal();
+}
+
+function metroStop() {
+  if (!METRO.running) return;
+  clearTimeout(METRO.timerID);
+  METRO.running = false;
+  if (METRO.ctx) { METRO.ctx.close().catch(()=>{}); METRO.ctx = null; }
+  // Log metronome session to daily log
+  if (METRO.startTime) {
+    const mins = Math.floor((Date.now() - METRO.startTime) / 60000);
+    const wd = getWD(STATE.currentWeek);
+    if (!wd.metroSessions) wd.metroSessions = [];
+    wd.metroSessions.push({
+      day: todayDayName(),
+      bpm: METRO.lastBpm,
+      mins,
+      pos: modalPosIdx + 1,
+      scaleName: modalScale ? modalScale.name + ' ' + modalScale.type : '',
+      ts: Date.now()
+    });
+    saveState();
+    METRO.startTime = null;
+  }
+  renderTabModal();
+}
+
+function metroSetBpm(delta) {
+  METRO.bpm = Math.max(20, Math.min(300, METRO.bpm + delta));
+  if (METRO.running) {
+    // Restart with new BPM smoothly
+    clearTimeout(METRO.timerID);
+    METRO.nextBeatTime = METRO.ctx.currentTime + 0.1;
+    metroSchedule();
+  }
+  const el = document.getElementById('metro-bpm-display');
+  if (el) el.textContent = METRO.bpm;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  TAB MODAL
+// ═══════════════════════════════════════════════════════════════════
+let modalScale = null, modalPosIdx = 0, modalLabelMode = 'notes'; // 'notes' | 'fingers' | 'degrees'
+
+function openTabModal(scale, posIdx) {
+  modalScale = scale; modalPosIdx = posIdx;
+  document.getElementById('tab-modal').classList.add('open');
+  renderTabModal();
+  document.body.style.overflow = 'hidden';
+}
+function closeTabModal() {
+  micDisarm();
+  metroStop();
+  document.getElementById('tab-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('tab-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('tab-modal')) closeTabModal();
+});
+
+function renderTabModal() {
+  const scale = modalScale;
+  const posIdx = modalPosIdx;
+  const week = STATE.currentWeek;
+  const wd = getWD(week);
+  const isDone = wd.positionsDone.includes(posIdx);
+
+  document.getElementById('tab-modal-title').textContent = `${scale.name} ${scale.type} — Position ${posIdx + 1}`;
+  const _fretLabel = ZONE_NAMES[posIdx];
+  document.getElementById('tab-modal-sub').textContent = `Position ${posIdx+1}  ·  Frets ${_fretLabel}`;
+
+  // Build fingering
+  const { fingering, lo, hi } = buildPositionFingering(scale.name, scale.type, posIdx);
+
+  // Position nav buttons
+  let navHtml = '<div class="tab-pos-nav">';
+  for (let p = 0; p < 5; p++) {
+    const pd = wd.positionsDone.includes(p);
+    const ac = p === posIdx;
+    navHtml += `<button class="tab-pos-btn${ac?' active':''}${pd?' done-pos':''}" 
+      onclick="modalPosIdx=${p};renderTabModal()">
+      Pos ${p+1}${pd?' ✓':''}
+    </button>`;
+  }
+  navHtml += '</div>';
+
+  // Position info strip
+  const notes = (SCALE_FORMULAS[scale.type]||[]).map(i => noteAt(scale.name, i));
+  const fretRange = lo === 0 ? 'Open position' : `Frets ${lo}–${hi}`;
+  const rootFrets = fingering.filter(n => n.degree==='1').map(n => `${['E','A','D','G','B','e'][n.string]}:${n.fret===0?'O':n.fret}`).join(', ');
+
+  let posInfoHtml = `<div class="pos-info-strip">
+    <div class="pis-item"><div class="pis-label">Position</div><div class="pis-val">${posIdx+1} of 5 &nbsp;·&nbsp; ${CAGED_SHAPES[posIdx]}</div></div>
+    <div class="pis-item"><div class="pis-label">Fret Zone</div><div class="pis-val">Frets ${ZONE_NAMES[posIdx]} (notes: ${lo}–${hi})</div></div>
+    <div class="pis-item"><div class="pis-label">Root Notes</div><div class="pis-val">${rootFrets||'—'}</div></div>
+    <div class="pis-item"><div class="pis-label">Notes in Position</div><div class="pis-val">${fingering.length}</div></div>
+  </div>`;
+
+  // Finger guide
+  const fingersByNum = [1,2,3,4].map(f => {
+    const ns = fingering.filter(n => n.finger===f && n.fret>0);
+    return { f, fret: ns.length ? ns[0].fret : null };
+  }).filter(x => x.fret !== null);
+  let fingerHtml = '<div class="card-subtitle" style="margin-top:14px;">Finger Assignments</div><div class="finger-guide">';
+  const fingerNames = ['','Index','Middle','Ring','Pinky'];
+  const uniqueFrets = [...new Set(fingering.filter(n=>n.fret>0).map(n=>n.fret))].sort((a,b)=>a-b);
+  uniqueFrets.forEach((fret, i) => {
+    const fn = i + 1;
+    fingerHtml += `<div class="fg-item"><span class="fg-fnum">${fn}</span>${fingerNames[fn]||'?'}<br><span style="color:var(--gold);font-size:1.1rem">fret ${fret}</span></div>`;
+  });
+  fingerHtml += '</div>';
+
+  // Scale formula steps
+  const formulaHtml = renderFormulaSteps(scale.name, scale.type, notes);
+
+  // Done button
+  const doneHtml = `<button class="modal-done-btn${isDone?' already':''}" 
+    onclick="togglePosDoneFromModal(${posIdx})">
+    ${isDone ? '✓ Marked as Practiced — click to undo' : 'Mark Position as Practiced ✓'}
+  </button>`;
+
+  // SVG tab — with label mode toggle
+  const modes = ['notes','degrees','fingers'];
+  const modeLabels = {'notes':'Note Names','degrees':'Scale Degrees','fingers':'Finger #'};
+  let toggleHtml = '<div class="label-mode-row"><span class="lm-label">Show:</span>';
+  modes.forEach(m => {
+    const ac = m === modalLabelMode ? ' active' : '';
+    toggleHtml += `<button class="lm-btn${ac}" onclick="modalLabelMode='${m}';refreshTabSVG();">${modeLabels[m]}</button>`;
+  });
+  toggleHtml += '</div>';
+
+  const svgHtml = `<div class="card-subtitle" style="margin-top:14px;">Fretboard Diagram</div>
+    ${toggleHtml}
+    <div class="tab-staff-wrap" id="tab-svg-wrap">${renderTabSVG(scale.name, scale.type, posIdx, modalLabelMode, scale.relRoot)}</div>`;
+
+  // ── Metronome card
+  const beats = Array.from({length: METRO.beatsPerBar}, (_, i) =>
+    `<span class="metro-beat${METRO.running && METRO.beat === i ? ' active' : ''}"></span>`
+  ).join('');
+  const metroHtml = `<div class="card" style="margin-top:12px;padding:12px 18px;">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div style="font-family:var(--fh);font-size:1rem;color:var(--ink-dim);">Metronome</div>
+      <button class="metro-bpm-btn" onclick="metroSetBpm(-5)">−</button>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div id="metro-bpm-display" style="font-family:var(--fm);font-size:1.6rem;color:var(--ink);min-width:52px;text-align:center;line-height:1;">${METRO.bpm}</div>
+        <div style="font-family:var(--fm);font-size:1rem;color:var(--ink-faint);letter-spacing:.08em;">BPM</div>
+      </div>
+      <button class="metro-bpm-btn" onclick="metroSetBpm(5)">+</button>
+      <button class="metro-bpm-btn" onclick="metroSetBpm(-1)" style="font-size:1.1rem;width:auto;padding:0 8px;">−1</button>
+      <button class="metro-bpm-btn" onclick="metroSetBpm(1)" style="font-size:1.1rem;width:auto;padding:0 8px;">+1</button>
+      <button class="metro-btn${METRO.running?' running':''}" onclick="${METRO.running?'metroStop()':'metroStart()'}">
+        ${METRO.running ? '■ Stop' : '▶ Start'}
+      </button>
+      <div style="display:flex;align-items:center;gap:2px;">${beats}</div>
+    </div>
+  </div>`;
+
+  // ── Rep counters (shown right after diagram)
+  const w = STATE.currentWeek;
+  const rS = getRep(w, `pos${posIdx}_scale`);
+  const rC = getRep(w, `pos${posIdx}_chord`);
+  const pct = v => Math.min(100, Math.round(v/30*100));
+  const col = v => v >= 30 ? 'var(--green)' : 'var(--accent)';
+  // ── Run history summary
+  function runLabel(r, idx) {
+    const total = r.correct + r.wrong;
+    const pctOk = total ? Math.round(r.correct/total*100) : 0;
+    const wrongNotes = [...new Set(r.notes.filter(n=>!n.correct).map(n=>n.note))];
+    const col = r.wrong===0 ? 'var(--green)' : r.wrong<=2 ? 'var(--gold)' : 'var(--red)';
+    const suffix = r.wrong > 0 ? ' (' + wrongNotes.join(',') + ')' : ' ✓';
+    return '<span style="color:'+col+';">#'+(idx+1)+' '+pctOk+'%'+suffix+'</span>';
+  }
+  const historyRows = MIC.runHistory.slice(-5);
+  const historyHtml = historyRows.length ? `
+    <div style="margin-top:10px;font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+      Recent: ${historyRows.map((r,i) => runLabel(r, MIC.runHistory.length - historyRows.length + i)).join(' · ')}
+    </div>` : '';
+
+  const repHtml = `<div class="card" style="margin-top:12px;padding:14px 18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="card-title" style="margin-bottom:0;">Practice Reps — Position ${posIdx+1}</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="modal-timer-display" style="font-family:var(--fm);font-size:1.6rem;color:${timerRunning?'var(--gold)':'var(--ink-faint)'};letter-spacing:.08em;min-width:60px;text-align:right;">${timerRunning?fmtTime(timerSecs):'--:--'}</div>
+        <button class="timer-btn${timerRunning?' danger':' primary'}" onclick="${timerRunning?'stopTimer(false)':'startTimer('+posIdx+',130)'}" style="font-size:1rem;padding:5px 10px;">
+          ${timerRunning?'■ Stop':'▶ 2:10'}
+        </button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+      <!-- SCALE RUNS with pitch detection -->
+      <div style="min-width:0;overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div style="font-family:var(--fh);font-size:1rem;color:var(--ink-dim);white-space:nowrap;">Scale Runs</div>
+          <button class="mic-btn${MIC.armed==='scale'&&MIC.posIdx===posIdx?' armed':''}" onclick="micArm(${w},${posIdx},'scale')">
+            ${MIC.armed==='scale'&&MIC.posIdx===posIdx ? '■ Stop' : '♪ Listen'}
+          </button>
+          <div style="font-family:var(--fb);font-size:1.36rem;color:${MIC.armed==='scale'&&MIC.posIdx===posIdx?'var(--red)':'var(--ink-faint)'};font-style:italic;flex:1;min-width:0;">
+            ${MIC.armed==='scale'&&MIC.posIdx===posIdx
+              ? '● Listening — play scale up &amp; down, pause between runs'
+              : 'Play scale up &amp; down · pause = 1 rep'}
+          </div>
+        </div>
+        ${MIC.armed==='scale'&&MIC.posIdx===posIdx ? `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;background:var(--paper-light);border:1px solid var(--border);border-radius:3px;padding:8px 12px;">
+            <div id="mic-live-note" style="font-family:var(--fm);font-size:1.8rem;font-weight:bold;min-width:36px;color:var(--ink-dim);">—</div>
+            <div>
+              <div id="mic-live-status" style="font-family:var(--fh);font-size:1rem;color:var(--ink-faint);">waiting...</div>
+              <div class="mic-level" style="width:120px;margin-top:4px;"><div id="mic-level-fill-scale" class="mic-level-fill" style="width:0%"></div></div>
+            </div>
+          </div>` : ''}
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+          <button class="rep-btn" style="width:34px;height:34px;font-size:1.1rem;flex-shrink:0;" onclick="addRep(${w},'pos${posIdx}_scale',-1);renderTabModal();">−</button>
+          <div id="mic-count-scale" style="font-family:var(--fm);font-size:1.5rem;color:${rS>=30?'var(--green)':'var(--ink)'};min-width:36px;text-align:center;transition:color .2s;">${rS}<span style="font-size:1.05rem;color:var(--ink-faint);display:block;margin-top:-4px;">/30${rS>=30?' ✓':''}</span></div>
+          <button class="rep-btn" style="width:34px;height:34px;font-size:1.1rem;flex-shrink:0;" onclick="addRep(${w},'pos${posIdx}_scale',1);renderTabModal();">+</button>
+        </div>
+        ${historyHtml}
+        <div class="rep-bar" style="width:100%;margin-top:6px;"><div class="rep-bar-fill" style="width:${pct(rS)}%;background:${col(rS)};"></div></div>
+      </div>
+
+      <!-- CHORD PLAYS — simple counter, no pitch detection -->
+      <div style="min-width:0;overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div style="font-family:var(--fh);font-size:1rem;color:var(--ink-dim);white-space:nowrap;">Chord Plays</div>
+          <button class="mic-btn${MIC.armed==='chord'&&MIC.posIdx===posIdx?' armed':''}" onclick="micArm(${w},${posIdx},'chord')">
+            ${MIC.armed==='chord'&&MIC.posIdx===posIdx ? '■ Stop' : '♪ Listen'}
+          </button>
+          <div style="font-family:var(--fb);font-size:1.36rem;color:${MIC.armed==='chord'&&MIC.posIdx===posIdx?'var(--red)':'var(--ink-faint)'};font-style:italic;flex:1;min-width:0;">
+            ${MIC.armed==='chord'&&MIC.posIdx===posIdx
+              ? '● Listening — play each chord, pause between'
+              : 'Play through all diatonic chords'}
+          </div>
+        </div>
+        ${MIC.armed==='chord'&&MIC.posIdx===posIdx ? `
+          <div style="margin-bottom:6px;">
+            <div class="mic-level" style="width:100%;"><div id="mic-level-fill-chord" class="mic-level-fill" style="width:0%"></div></div>
+          </div>` : ''}
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+          <button class="rep-btn" style="width:34px;height:34px;font-size:1.1rem;flex-shrink:0;" onclick="addRep(${w},'pos${posIdx}_chord',-1);renderTabModal();">−</button>
+          <div id="mic-count-chord" style="font-family:var(--fm);font-size:1.5rem;color:${rC>=30?'var(--green)':'var(--ink)'};min-width:36px;text-align:center;transition:color .2s;">${rC}<span style="font-size:1.05rem;color:var(--ink-faint);display:block;margin-top:-4px;">/30${rC>=30?' ✓':''}</span></div>
+          <button class="rep-btn" style="width:34px;height:34px;font-size:1.1rem;flex-shrink:0;" onclick="addRep(${w},'pos${posIdx}_chord',1);renderTabModal();">+</button>
+        </div>
+        <div class="rep-bar" style="width:100%;"><div class="rep-bar-fill" style="width:${pct(rC)}%;background:${col(rC)};"></div></div>
+      </div>
+
+    </div>
+  </div>`;
+
+  // Chord diagrams for this position
+  const chordsHtml = renderChordDiagrams(scale, posIdx, modalLabelMode);
+
+  document.getElementById('tab-modal-body').innerHTML =
+    navHtml + formulaHtml + svgHtml + repHtml + metroHtml + chordsHtml + doneHtml;
+}
+
+function togglePosDoneFromModal(posIdx) {
+  togglePositionDone(posIdx);
+  renderTabModal();
+}
+
+// Re-render only the SVG + chords when label mode changes (no full modal rebuild)
+function refreshTabSVG() {
+  const wrap = document.getElementById('tab-svg-wrap');
+  if (wrap && modalScale)
+    wrap.innerHTML = renderTabSVG(modalScale.name, modalScale.type, modalPosIdx, modalLabelMode, modalScale.relRoot);
+
+  const cwrap = document.getElementById('chord-diagrams-wrap');
+  if (cwrap && modalScale) {
+    // Re-render all chord SVGs inside the existing wrapper
+    cwrap.querySelectorAll('.chord-diagram-cell').forEach((cell, i) => {
+      const svgEl = cell.querySelector('svg');
+      if (svgEl && modalScale.chords[i]) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = renderChordSVG(modalScale.chords[i], modalPosIdx, modalLabelMode);
+        svgEl.replaceWith(tmp.firstChild);
+      }
+    });
+  }
+
+  // Update toggle button active states
+  const labelMap = {fingers:'Finger #', notes:'Note Names', degrees:'Scale Degrees'};
+  document.querySelectorAll('.lm-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === labelMap[modalLabelMode]);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  TEST ENGINE
+// ═══════════════════════════════════════════════════════════════════
+let testState = null;
+function buildTestQuestions(week) {
+  const pool = SCHEDULE.filter(s=>s.type==='learn'&&s.week<week).map(s=>s.scale);
+  if (pool.length < 2) return [];
+  const questions = [];
+  const qtypes = ['notes','relative','chords','formula'];
+  for (let i = 0; i < 8; i++) {
+    const scale = pool[i % pool.length];
+    const qt = qtypes[i % qtypes.length];
+    let q, correct, distractors;
+    const ints = SCALE_FORMULAS[scale.type]||[];
+    const notes = ints.map(n=>noteAt(scale.name,n));
+    const steps = ints.length ? stepsFromIntervals(ints) : [];
+
+    if (qt === 'notes' && notes.length > 2) {
+      q = `What is the 3rd note of ${scale.name} ${scale.type}?`;
+      correct = notes[2];
+      distractors = ['C','D','E','F','G','A','B','F#','C#'].filter(n=>n!==correct).slice(0,3);
+    } else if (qt === 'relative') {
+      q = `The relative of ${scale.name} ${scale.type} is?`;
+      correct = `${scale.relRoot} ${scale.relative.split(' ').slice(1).join(' ')}`;
+      distractors = pool.filter(s2=>s2!==scale).slice(0,3).map(s2=>`${s2.relRoot} ${s2.relative.split(' ').slice(1).join(' ')}`);
+    } else if (qt === 'formula' && steps.length > 0) {
+      q = `First step of ${scale.name} ${scale.type} is?`;
+      correct = steps[0]==='W'?'Whole step':steps[0]==='H'?'Half step':'1½ steps';
+      distractors = ['Whole step','Half step','1½ steps'].filter(x=>x!==correct);
+    } else {
+      q = `How many notes in ${scale.name} ${scale.type}?`;
+      correct = String(notes.length);
+      distractors = [String(notes.length-1), String(notes.length+1), '8'].filter(x=>x!==correct).slice(0,3);
+    }
+    const opts = shuffle4([correct, ...distractors.slice(0,3)]);
+    questions.push({ q, opts, correct });
+  }
+  return questions;
+}
+function shuffle4(arr){ const a=[...arr]; for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function startTest(week){ testState={questions:buildTestQuestions(week),current:0,score:0,answered:false}; renderTodayPage(); }
+function answerTest(opt){
+  if(testState.answered) return; testState.answered=true;
+  const q=testState.questions[testState.current];
+  const correct=opt===q.correct;
+  if(correct) testState.score++;
+  document.querySelectorAll('.test-opt').forEach(btn=>{
+    if(btn.dataset.opt===q.correct) btn.classList.add('correct');
+    else if(btn.dataset.opt===opt&&!correct) btn.classList.add('wrong');
+    btn.disabled=true;
+  });
+  setTimeout(()=>{
+    testState.current++; testState.answered=false;
+    if(testState.current>=testState.questions.length){
+      const pct=Math.round(testState.score/testState.questions.length*100);
+      getWD(STATE.currentWeek).testScore=pct; saveState(); testState=null;
+    }
+    renderTodayPage();
+  },1200);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RENDER TODAY
+// ═══════════════════════════════════════════════════════════════════
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+function renderTodayPage(){
+  const page=document.getElementById('page-today');
+  const week=STATE.currentWeek;
+  const entry=SCHEDULE[week-1];
+  const wd=getWD(week);
+  const isTest=entry.type==='test';
+  const scale=entry.scale;
+  document.getElementById('week-badge').textContent=`Week ${week} / 25`;
+
+  const totalMins=Object.values(wd.dailyMins).reduce((a,b)=>a+b,0);
+  const posDone=wd.positionsDone.length;
+  const reviewScales=getReviewScales(week);
+
+  // Active scale for display — switches to relative when toggled
+  const isRel = !isTest && STATE.viewingRelative && scale.relRoot && scale.relRoot !== '—';
+  const activeRoot  = isRel ? scale.relRoot : scale.name;
+  // Extract just the type from relative string (e.g. "F# Minor Pentatonic" → "Minor Pentatonic")
+  const activeType  = isRel ? scale.relative.replace(/^[A-G][#b]?\s*/,'') : scale.type;
+  const intervals   = SCALE_FORMULAS[activeType] || SCALE_FORMULAS[scale.type] || [];
+  const computedNotes = intervals.map(i => noteAt(activeRoot, i));
+  const displayNotes  = computedNotes.length ? computedNotes : scale.notes;
+
+  let html='';
+
+  // HERO
+  if(!isTest){
+    const relLabel = scale.relative;
+    const isRel = STATE.viewingRelative;
+    const toggleLabel = isRel ? `⇄ ${scale.name} ${scale.type}` : `⇄ ${relLabel}`;
+    const formulaInline = renderFormulaSteps(activeRoot, activeType, displayNotes);
+    const chordsInline  = scale.chords.map((c,i)=>`<div class="chord-pill ${i===0?'i':''}">${c}</div>`).join('');
+    html+=`<div class="scale-hero">
+      <div class="week-label">Week ${week} &nbsp;·&nbsp; <span class="badge badge-new">${isRel?'Relative Scale':'New Scale'}</span></div>
+      <div class="scale-name">${isRel ? scale.relative : scale.name+' '+scale.type}</div>
+      <div class="scale-type">5 Positions &nbsp;·&nbsp; 2 min each &nbsp;·&nbsp; 10 min total</div>
+      <button onclick="STATE.viewingRelative=!STATE.viewingRelative;saveState();renderTodayPage();"
+        style="margin-top:12px;background:var(--paper-light);border:1px solid var(--border-bright);color:var(--gold);
+        font-family:var(--fh);font-size:1rem;padding:5px 14px;cursor:pointer;border-radius:2px;letter-spacing:.04em;transition:all .2s;">
+        ${toggleLabel}
+      </button>
+      <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;">
+        ${formulaInline}
+        <div class="card-subtitle" style="margin-top:12px;">Diatonic Chords</div>
+        <div class="chords-row">${chordsInline}</div>
+      </div>
+    </div>`;
+  } else {
+    html+=`<div class="scale-hero" style="border-color:var(--red-dim);background:linear-gradient(135deg,#1a0808,#0e0404)">
+      <div class="week-label">Week ${week} &nbsp;·&nbsp; <span class="badge badge-test">Test Week</span></div>
+      <div class="scale-name" style="color:var(--red)">Progress Test</div>
+      <div class="scale-type">All scales learned so far &nbsp;·&nbsp; Continuing: ${scale.name} ${scale.type}</div>
+    </div>`;
+  }
+
+  // WEEK NAV
+  html+=`<div class="flex-row" style="margin-bottom:16px;">
+    ${week>1?`<button class="btn ghost" onclick="jumpWeek(${week-1})">← Week ${week-1}</button>`:'<span></span>'}
+    <div class="spacer"></div>
+    ${week<25?`<button class="btn" onclick="jumpWeek(${week+1})">Week ${week+1} →</button>`:''}
+  </div>`;
+
+  // REVIEW — immediately after nav
+  if(!isTest && reviewScales.length>0){
+    html+=`<div class="card">
+      <div class="card-title">Review Scales <span class="badge badge-review" style="margin-left:8px;font-size:1rem;">2 Random</span></div>
+      <p class="info-text" style="margin-bottom:12px;">Run through each review scale. Click a card to open its tab.</p>
+      <div class="review-cards">`;
+    reviewScales.forEach((rs,idx)=>{
+      const done=wd.reviewDone.includes(idx);
+      const ints2=SCALE_FORMULAS[rs.type]||[];
+      const rNotes=ints2.map(i=>noteAt(rs.name,i));
+      const rSteps=ints2.length?stepsFromIntervals(ints2):[];
+      const stepColors={'W':'var(--gold)','H':'var(--red)','WH':'var(--blue)','W2':'#44aaaa','?':'var(--ink-faint)'};
+      // Build inline pill formula
+      let formulaPills='<div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;margin-top:10px;">';
+      rNotes.forEach((note,i)=>{
+        const isRoot=i===0;
+        formulaPills+=`<div style="background:${isRoot?'var(--accent-dark)':'var(--paper-mid)'};border:1px solid ${isRoot?'var(--accent)':'var(--border-bright)'};color:${isRoot?'var(--ink)':'var(--ink)'};font-family:var(--fm);font-size:1rem;font-weight:bold;padding:3px 7px;border-radius:2px;">${note}</div>`;
+        if(i<rSteps.length){
+          formulaPills+=`<div style="font-family:var(--fm);font-size:1.05rem;font-weight:bold;color:${stepColors[rSteps[i]]||'var(--ink-faint)'};padding:0 2px;">${rSteps[i]}</div>`;
+        }
+      });
+      formulaPills+='</div>';
+      // Legend
+      const usedSteps=[...new Set(rSteps)];
+      const stepNames={'W':'Whole','H':'Half','WH':'1½','W2':'2×Whole'};
+      let legend=`<div style="font-family:var(--fm);font-size:1rem;margin-top:6px;display:flex;gap:10px;flex-wrap:wrap;">`;
+      usedSteps.forEach(s=>{
+        legend+=`<span style="color:${stepColors[s]||'var(--ink-faint)'}"><b>${s}</b> = ${stepNames[s]||s}</span>`;
+      });
+      legend+='</div>';
+      html+=`<div class="review-card ${done?'done':''}" onclick="markReviewDone(${idx});openTabModal(SCHEDULE.find(s=>s.scale.name==='${rs.name}'&&s.scale.type==='${rs.type}').scale,0)">
+        <div class="rc-done">✓ Reviewed</div>
+        <div class="rc-name">${rs.name} ${rs.type}</div>
+        ${formulaPills}
+        ${rSteps.length?legend:''}
+        <div style="font-family:var(--fm);font-size:1rem;color:var(--blue);margin-top:8px;">tap to review tab →</div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  }
+
+  // TEST — immediately after nav (test weeks)
+  if(isTest){
+    const saved=wd.testScore;
+    if(saved!==null&&saved!==undefined){
+      html+=`<div class="card"><div class="card-title">Test Complete</div>
+        <div style="text-align:center;padding:20px;">
+          <div style="font-family:var(--fh);font-size:3rem;color:${saved>=70?'var(--green)':'var(--red)'};">${saved}%</div>
+          <div class="info-text" style="margin-top:8px;">${saved>=85?'Excellent!':saved>=70?'Good — a bit more review needed.':'Needs work — revisit weak scales.'}</div>
+          <button class="btn ghost" style="margin-top:16px;" onclick="testState=null;getWD(${week}).testScore=null;saveState();renderTodayPage()">Retake Test</button>
+        </div></div>`;
+    } else if(testState){
+      const q=testState.questions[testState.current];
+      html+=`<div class="card"><div class="card-title">Bi-Weekly Test</div>
+        <div class="test-card">
+          <div class="test-progress">Question ${testState.current+1} of ${testState.questions.length}</div>
+          <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${(testState.current/testState.questions.length)*100}%;background:var(--red)"></div></div>
+          <div class="test-question">${q.q}</div>
+          <div class="test-options">${q.opts.map(o=>`<button class="test-opt" data-opt="${o}" onclick="answerTest('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+          <div class="test-score">Score: ${testState.score} / ${testState.current}</div>
+        </div></div>`;
+    } else {
+      html+=`<div class="card"><div class="card-title">Bi-Weekly Test</div>
+        <div class="test-card">
+          <h2>Progress Check</h2>
+          <p class="info-text" style="margin:12px 0;">8 questions on notes, chords, relatives &amp; scale formulas.</p>
+          <button class="btn" style="margin-top:16px;" onclick="startTest(${week})">Begin Test</button>
+        </div></div>`;
+    }
+  }
+
+  // POSITIONS (learn weeks)
+  if(!isTest){
+    html+=`<div class="card">
+      <div class="card-title">5 Positions · Practice Tracker</div>
+      <p class="info-text" style="margin-bottom:12px;">
+        <em>Tap a position</em> to open the diagram and log reps. 30 scale + 30 chord reps = position complete.
+      </p>
+      <div class="positions-grid">`;
+    for(let i=0;i<5;i++){
+      const done=wd.positionsDone.includes(i);
+      const rS=getRep(week,`pos${i}_scale`);
+      const rC=getRep(week,`pos${i}_chord`);
+      const total=rS+rC;
+      const pct=Math.min(100,Math.round(total/60*100));
+      html+=`<div class="pos-card ${done?'done':''}" onclick="openTabModal({
+        name:'${activeRoot}',
+        type:'${activeType}',
+        chords:SCHEDULE[${week-1}].scale.chords,
+        relRoot:'${isRel ? scale.name : (scale.relRoot||'')}',
+        relative:'${isRel ? scale.name+' '+scale.type : (scale.relative||'')}'
+      },${i})">
+        <div class="pos-num">${i+1}</div>
+        <div class="pos-label">${CAGED_SHAPES[i]}</div>
+        <div class="pos-fret">${ZONE_NAMES[i]}</div>
+        <div style="margin-top:6px;font-family:var(--fm);font-size:1.05rem;color:${done?'var(--green)':'var(--ink-faint)'};">${done?'✓ Done':total+'/60'}</div>
+        <div class="rep-bar" style="margin-top:4px;width:100%;"><div class="rep-bar-fill" style="width:${pct}%;background:${done?'var(--green)':'var(--accent)'};\"></div></div>
+      </div>`;
+    }
+    html+=`</div>
+      <div style="margin-top:10px;">
+        <div class="prog-label"><span>Positions complete (30 scale + 30 chord reps each)</span><span>${posDone}/5</span></div>
+        <div class="prog-bar-wrap"><div class="prog-bar-fill ${posDone===5?'green':''}" style="width:${(posDone/5)*100}%"></div></div>
+      </div>
+    </div>`;
+  }
+
+  // DAILY LOG
+  // Derive what was practiced each day from run scores
+  const runsByDay = {};
+  (wd.runScores||[]).forEach(r => {
+    if (!runsByDay[r.day]) runsByDay[r.day] = [];
+    runsByDay[r.day].push(r);
+  });
+
+  // Weekly rep summary per position (always visible)
+  const weekRepSummary = [];
+  for (let i = 0; i < 5; i++) {
+    const rS = getRep(week, `pos${i}_scale`);
+    const rC = getRep(week, `pos${i}_chord`);
+    if (rS > 0 || rC > 0) weekRepSummary.push({ pos: i+1, rS, rC });
+  }
+
+  html+=`<div class="card"><div class="card-title">Daily Practice Log</div>
+    <p class="info-text" style="margin-bottom:12px;">Goal: <em>10+ min/day</em> · 70 min/week total.</p>`;
+
+  // Build per-day progress cards
+  const scaleName = isRel ? scale.relative : scale.name + ' ' + scale.type;
+
+  // Helper to format date for a day this week (Mon=0 offset from this week's Monday)
+  function dayDate(dayName) {
+    const dayIdx = DAYS.indexOf(dayName);
+    const now = new Date();
+    const todayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1; // Mon=0..Sun=6
+    const diff = dayIdx - todayIdx;
+    const d = new Date(now);
+    d.setDate(d.getDate() + diff);
+    return d.toLocaleDateString('en-IL', { day:'numeric', month:'short' });
+  }
+
+  // Show weekly rep positions summary
+  if (weekRepSummary.length > 0) {
+    html += `<div style="background:var(--paper-light);border:1px solid var(--border);border-radius:3px;padding:10px 14px;margin-bottom:12px;">
+      <div style="font-family:var(--fh);font-size:1rem;color:var(--ink-dim);margin-bottom:8px;">This Week — Position Reps</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        ${weekRepSummary.map(p=>{
+          const done = p.rS>=30 && p.rC>=30;
+          return `<div style="font-family:var(--fm);font-size:1.1rem;min-width:80px;background:var(--paper-mid);border:1px solid ${done?'var(--green-dim)':'var(--border)'};border-radius:2px;padding:6px 8px;">
+            <div style="color:var(--ink-dim);margin-bottom:3px;font-family:var(--fh);">Pos ${p.pos}${done?' ✓':''}</div>
+            <div style="color:${p.rS>=30?'var(--green)':'var(--accent)'};">Scale: ${p.rS}/30</div>
+            <div style="color:${p.rC>=30?'var(--green)':'var(--gold)'};">Chord: ${p.rC}/30</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  DAYS.forEach(day => {
+    const mins = wd.dailyMins[day] || 0;
+    const met  = mins >= 10;
+    const dayRuns = runsByDay[day] || [];
+    const dayMetro = (wd.metroSessions||[]).filter(s => s.day === day);
+    const totalRuns = dayRuns.length;
+    const perfectRuns = dayRuns.filter(r => r.wrong === 0).length;
+    const avgAcc = totalRuns ? Math.round(dayRuns.reduce((s,r) => s + (r.total ? r.correct/r.total*100 : 0), 0) / totalRuns) : null;
+    const allWrongNotes = [...new Set(dayRuns.flatMap(r => r.wrongNotes || []))];
+    const dateStr = dayDate(day);
+    const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+    const isToday = DAYS.indexOf(day) === todayIdx;
+    const hasActivity = mins > 0 || totalRuns > 0 || isToday || dayMetro.length > 0;
+
+    // Date header row
+    html += `<div style="display:flex;align-items:center;gap:8px;padding:${hasActivity?'10px':'6px'} 0 ${hasActivity?'4px':'6px'};border-bottom:${hasActivity?'none':'1px solid var(--border)'};">
+      <div style="font-family:var(--fh);font-size:1rem;color:var(--ink-dim);width:42px;flex-shrink:0;">${day}</div>
+      <div style="font-family:var(--fm);font-size:1.05rem;color:var(--ink-faint);width:52px;flex-shrink:0;">${dateStr}</div>
+      <input class="input-min" type="number" min="0" max="120" value="${mins||''}" placeholder="0"
+        oninput="logDailyMins('${day}',this.value)">
+      <div style="font-family:var(--fm);font-size:1rem;color:var(--gold);width:40px;">${mins>0?mins+'m':''}</div>
+      <div class="mini-prog" style="flex:1;"><div class="mini-prog-fill ${met?'met':''}" style="width:${Math.min(100,(mins/20)*100)}%"></div></div>
+      <div style="font-size:1rem;width:16px;text-align:center;">${met?'✓':mins>0?'·':''}</div>
+    </div>`;
+
+    // Per-day detail card (only if activity)
+    if (hasActivity) {
+      html += `<div style="margin:0 0 10px 94px;background:var(--paper-light);border:1px solid var(--border);border-radius:3px;padding:8px 12px;font-family:var(--fm);font-size:1.1rem;">`;
+
+      // Scale name
+      html += `<div style="font-family:var(--fh);font-size:1rem;color:var(--ink);margin-bottom:6px;">${scaleName}</div>`;
+
+      // Weekly rep context for this day
+      if (weekRepSummary.length > 0) {
+        html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:${totalRuns>0?'6px':'0'};">
+          ${weekRepSummary.map(p=>{
+            const done = p.rS>=30 && p.rC>=30;
+            return `<span style="font-family:var(--fm);font-size:1.05rem;color:var(--ink-faint);">
+              Pos ${p.pos}: <span style="color:${p.rS>=30?'var(--green)':'var(--accent)'};">${p.rS}S</span>
+              / <span style="color:${p.rC>=30?'var(--green)':'var(--gold)'};">${p.rC}C</span>${done?' ✓':''}
+            </span>`;
+          }).join(' · ')}
+        </div>`;
+      }
+
+      // Run stats row
+      if (totalRuns > 0) {
+        const accCol = avgAcc >= 85 ? 'var(--green)' : avgAcc >= 70 ? 'var(--gold)' : 'var(--red)';
+        html += `<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:${allWrongNotes.length?'6px':'0'};">
+          <span style="color:var(--ink-dim);">Runs: <span style="color:var(--ink);">${totalRuns}</span></span>
+          <span style="color:var(--ink-dim);">Perfect: <span style="color:var(--green);">${perfectRuns}</span></span>
+          <span style="color:var(--ink-dim);">Accuracy: <span style="color:${accCol};">${avgAcc}%</span></span>
+          <span style="color:var(--ink-dim);">${dayRuns.slice(-4).map(r=>{
+            const pct=r.total?Math.round(r.correct/r.total*100):0;
+            const col=r.wrong===0?'var(--green)':pct>=70?'var(--gold)':'var(--red)';
+            return '<span style="color:'+col+';">P'+r.pos+':'+pct+'%</span>';
+          }).join(' ')}</span>
+        </div>`;
+
+        // Problematic notes
+        if (allWrongNotes.length) {
+          html += `<div style="color:var(--red);margin-top:2px;">⚠ Problem notes: ${allWrongNotes.map(n=>`<span style="background:var(--red-dim);padding:1px 5px;border-radius:2px;margin-right:3px;">${n}</span>`).join('')}</div>`;
+        }
+      } else if (mins > 0) {
+        html += `<div style="color:var(--ink-faint);font-style:italic;font-family:var(--fb);font-size:1.1rem;">${mins} min practiced · no mic runs recorded</div>`;
+      } else if (isToday) {
+        html += `<div style="color:var(--ink-faint);font-style:italic;font-family:var(--fb);font-size:1.1rem;">No practice logged yet today</div>`;
+      }
+
+      // Metronome sessions
+      if (dayMetro.length > 0) {
+        const bpms = [...new Set(dayMetro.map(s => s.bpm))].join(', ');
+        const totalMetroMins = dayMetro.reduce((a,s) => a + (s.mins||0), 0);
+        html += `<div style="margin-top:6px;font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+          ♩ Metronome: ${dayMetro.length} session${dayMetro.length>1?'s':''}
+          · BPM: ${bpms}
+          ${totalMetroMins > 0 ? '· '+totalMetroMins+' min' : ''}
+        </div>`;
+      }
+
+      html += `</div>`;
+    }
+  });
+  const tgp=Math.min(100,(totalMins/70)*100);
+  const allRuns=wd.runScores||[];
+  const weekPerfect=allRuns.filter(r=>r.wrong===0).length;
+  const weekAvgAcc=allRuns.length?Math.round(allRuns.reduce((s,r)=>s+(r.total?r.correct/r.total*100:0),0)/allRuns.length):null;
+  html+=`<div style="margin-top:12px;">
+    <div class="prog-label"><span>Weekly total</span><span>${totalMins} / 70 min</span></div>
+    <div class="prog-bar-wrap"><div class="prog-bar-fill ${totalMins>=70?'green':''}" style="width:${tgp}%"></div></div>
+    ${allRuns.length?`<div style="margin-top:8px;font-family:var(--fm);font-size:1.1rem;color:var(--ink-faint);">
+      Scale runs this week: <span style="color:var(--ink);">${allRuns.length}</span>
+      &nbsp;·&nbsp; Perfect: <span style="color:var(--green);">${weekPerfect}</span>
+      &nbsp;·&nbsp; Avg accuracy: <span style="color:${weekAvgAcc>=85?'var(--green)':weekAvgAcc>=70?'var(--gold)':'var(--red)'};">${weekAvgAcc}%</span>
+    </div>`:''}
+  </div></div>`;
+
+  page.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RENDER SCHEDULE
+// ═══════════════════════════════════════════════════════════════════
+function renderSchedulePage(){
+  document.getElementById('sched-grid').innerHTML=SCHEDULE.map(entry=>{
+    const isCurrent=entry.week===STATE.currentWeek;
+    const wd=STATE.weekData[entry.week];
+    const isDone=wd&&(entry.type==='test'?wd.testScore!=null:wd.positionsDone.length>=5);
+    const isTest=entry.type==='test';
+    const cls=[isCurrent?'current':'',isDone&&!isCurrent?'completed':'',isTest&&!isDone&&!isCurrent?'test-week':''].join(' ');
+    const badge=isTest?`<span class="badge badge-test" style="font-size:1rem;">TEST</span>`:'';
+    const ints=SCALE_FORMULAS[entry.scale.type]||[];
+    const steps=ints.length?stepsFromIntervals(ints):[];
+    return `<div class="sched-item ${cls}" onclick="jumpWeek(${entry.week})">
+      <div class="sw-num">Week ${entry.week} ${badge}</div>
+      <div class="sw-name">${entry.scale.name} ${entry.scale.type}</div>
+      <div class="sw-type">${isTest?'Bi-Weekly Test':steps.slice(0,4).join(' ')+(steps.length>4?' …':'')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RENDER STATS
+// ═══════════════════════════════════════════════════════════════════
+function renderStatsPage(){
+  const learned=SCHEDULE.filter(s=>s.type==='learn'&&s.week<=STATE.currentWeek);
+  const fluent=learned.filter(s=>{ const w=STATE.weekData[s.week]; return w&&w.positionsDone.length>=5; }).length;
+  const totalMins=Object.values(STATE.weekData).reduce((sum,wd)=>sum+Object.values(wd.dailyMins||{}).reduce((a,b)=>a+b,0),0);
+  const scores=Object.values(STATE.weekData).map(w=>w.testScore).filter(s=>s!=null);
+  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-box"><div class="stat-num">${STATE.currentWeek}</div><div class="stat-lbl">Current Week</div></div>
+    <div class="stat-box"><div class="stat-num">${fluent}</div><div class="stat-lbl">Scales Fluent</div></div>
+    <div class="stat-box"><div class="stat-num">${totalMins}</div><div class="stat-lbl">Min Practiced</div></div>
+    <div class="stat-box"><div class="stat-num">${avg!==null?avg+'%':'—'}</div><div class="stat-lbl">Avg Test Score</div></div>
+    <div class="stat-box"><div class="stat-num">${scores.length}</div><div class="stat-lbl">Tests Taken</div></div>
+    <div class="stat-box"><div class="stat-num">${25-STATE.currentWeek}</div><div class="stat-lbl">Weeks Left</div></div>`;
+  document.getElementById('heatmap').innerHTML=SCHEDULE.map(entry=>{
+    const wd=STATE.weekData[entry.week];
+    const isCurrent=entry.week===STATE.currentWeek;
+    const isDone=wd&&(entry.type==='test'?wd.testScore!=null:wd.positionsDone.length>=5);
+    const cls=isCurrent?'current':isDone?(entry.type==='test'?'test':'done'):'';
+    return `<div class="hm-cell ${cls}" data-tip="Wk ${entry.week}: ${entry.scale.name} ${entry.scale.type}" onclick="jumpWeek(${entry.week})"></div>`;
+  }).join('');
+  const testWeeks=SCHEDULE.filter(s=>s.type==='test');
+  document.getElementById('test-score-history').innerHTML=testWeeks.map(tw=>{
+    const wd=STATE.weekData[tw.week];
+    const score=wd&&wd.testScore!=null?wd.testScore:null;
+    const pct=score||0;
+    const c=score===null?'var(--paper-light)':score>=85?'var(--green)':score>=70?'var(--accent)':'var(--red)';
+    return `<div style="margin-bottom:10px;">
+      <div class="prog-label"><span>Week ${tw.week} Test</span><span>${score!==null?score+'%':'not taken'}</span></div>
+      <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${pct}%;background:${c}"></div></div>
+    </div>`;
+  }).join('')||'<p class="info-text">No tests taken yet.</p>';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  NAVIGATION & INIT
+// ═══════════════════════════════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  document.getElementById('page-'+id).classList.add('active');
+  if(id==='today') renderTodayPage();
+  else if(id==='schedule') renderSchedulePage();
+  else if(id==='stats') renderStatsPage();
+  // refs page is static HTML — no render needed
+}
+function jumpWeek(w){ STATE.currentWeek=Math.max(1,Math.min(25,w)); STATE.viewingRelative=false; saveState(); showPage('today'); window.scrollTo(0,0); }
+document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+showPage('today');
+</script>
+</body>
+</html>
